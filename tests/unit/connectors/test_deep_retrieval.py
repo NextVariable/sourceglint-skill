@@ -416,3 +416,28 @@ def test_community_prefix_collision_does_not_query_minecraft_for_mcp():
     assert 'MCPE' not in queried
     assert 'MCP' in queried
     assert 'MCPServers' in queried
+
+
+def test_archive_search_reports_when_a_non_latin_query_leaves_nothing_to_search_with():
+    class Client:
+        def __init__(self):
+            self.urls = []
+
+        def request(self, url, **kwargs):
+            self.urls.append(url)
+            return response({"data": []})
+
+    client, limitations = Client(), []
+    assert reddit_archive(client, "开源 工具", PLAN, {**REQUEST, "query": "开源 工具"}, [], limitations) == []
+    assert client.urls == []
+    assert any("skipped" in note and "Latin" in note for note in limitations)
+
+
+def test_archive_search_stays_quiet_when_the_query_has_latin_keywords():
+    class Client:
+        def request(self, url, **kwargs):
+            return response({"data": []})
+
+    limitations = []
+    reddit_archive(Client(), "Claude Code 评测", PLAN, {**REQUEST, "query": "Claude Code 评测"}, [], limitations)
+    assert not any("skipped" in note for note in limitations)

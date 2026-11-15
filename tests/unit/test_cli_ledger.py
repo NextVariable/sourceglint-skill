@@ -37,3 +37,23 @@ def test_cli_rejects_existing_nonempty_ledger_before_retrieval(tmp_path, monkeyp
     assert main(["recent examples", "--ledger", str(path)]) == 1
     assert "fresh path" in capsys.readouterr().err
     assert path.read_text() == "existing research\n"
+
+
+def test_model_can_be_loaded_from_a_python_file(tmp_path):
+    model_file = tmp_path / "my_model.py"
+    model_file.write_text("def build_model():\n    return 'file-model'\n")
+    assert cli._load_model(str(model_file)) == "file-model"
+
+
+def test_model_can_be_loaded_from_module_and_attribute():
+    assert cli._load_model("os.path:sep") == "/"
+    assert cli._load_model("") is None
+
+
+def test_model_file_without_build_model_is_a_user_error(tmp_path):
+    import pytest
+
+    model_file = tmp_path / "empty_model.py"
+    model_file.write_text("x = 1\n")
+    with pytest.raises(ValueError, match="build_model"):
+        cli._load_model(str(model_file))

@@ -118,7 +118,9 @@ def _github_owner_matches(url: str, owners: Iterable[str]) -> tuple[str, str] | 
         return None
     if not split.netloc:
         return None
-    host = _normalise_host(_split_www(split.netloc.split(":")[0]))
+    # hostname drops userinfo and port; splitting netloc on ":" would read the user part of
+    # https://github.com:x@evil.org/ as the host.
+    host = _normalise_host(_split_www(split.hostname or ""))
     if host != "github.com":
         return None
     if not split.path or split.path == "/":
@@ -153,9 +155,7 @@ class OfficialDomainClassifier:
             split = urlsplit(url)
         except (ValueError, TypeError):
             return OfficialClassification(is_official=False)
-        host_with_port = split.netloc or ""
-        host_no_port = host_with_port.split(":")[0]
-        host = _split_www(_normalise_host(host_no_port))
+        host = _split_www(_normalise_host(split.hostname or ""))
 
         # --- GitHub owner path takes precedence when host == github.com
         for rule in self._rules:

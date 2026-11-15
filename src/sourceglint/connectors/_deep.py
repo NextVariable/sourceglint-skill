@@ -380,6 +380,13 @@ def reddit_archive(client, query, plan, request, parents, limitations, limit=20)
         if isinstance(name, str) and re.fullmatch(r"(?:r/)?[A-Za-z0-9_]{2,32}", name):
             cleaned = name.removeprefix("r/")
             candidates.setdefault(cleaned.casefold(), cleaned)
+    if not candidates:
+        # Community names are Latin letters, digits and underscores, so a Chinese or Japanese
+        # query leaves nothing to search with. Say so rather than return silently.
+        limitations.append(
+            "Reddit public archive search skipped: no community name could be derived "
+            "from the query (names need Latin keywords of 2-32 characters)"
+        )
     explicit = {str(x).removeprefix("r/").casefold() for x in request.get("subreddits", [])}
     entity = "".join(words[:2]).casefold()
     first = words[0].casefold() if words else ""

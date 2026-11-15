@@ -240,3 +240,10 @@ class TestResolution:
         )
         sel = select_brief(BriefInput(ledger=ledger, signals=sigs, insights=insights))
         assert sel.facts[0].evidence_ids == (e1,)
+
+
+def test_select_brief_accepts_an_input_without_a_context():
+    """BriefInput.context may be None; selection falls back to the default context."""
+    selected = select_brief(BriefInput(context=None))
+    assert selected.context == BriefContext()
+    assert "recommendations" in selected.diagnostics.missing_layers

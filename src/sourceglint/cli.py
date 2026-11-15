@@ -18,6 +18,8 @@ passed as data to the canonical ``run_sourceglint`` Python API.
 from __future__ import annotations
 
 import argparse
+import importlib
+import importlib.util
 import json
 import sys
 from datetime import datetime, timezone
@@ -109,8 +111,6 @@ def _load_model(spec: str | None) -> Any:
         return None
     if ":" in spec and not spec.endswith(".py"):
         module_name, _, attr = spec.partition(":")
-        import importlib
-
         module = importlib.import_module(module_name)
         factory = getattr(module, attr)
         if callable(factory):

@@ -105,12 +105,22 @@ class TestWindowParsing:
             ("3 months", 90),
             ("3ヶ月", 90),
             ("quarter", 90),
+            # A unit followed by more CJK text used to be ignored, so the default 30 days applied.
+            ("最近14天的趋势", 14),
+            ("过去3个月的变化", 90),
+            ("过去 7 天内的反馈", 7),
+            ("直近14日の動向", 14),
+            ("3ヶ月の動向", 90),
         ],
     )
     def test_relative_windows(self, phrase, days):
         win, text = resolve_window(phrase)
         assert win == {"days": days}
         assert text == f"Last {days} days"
+
+    @pytest.mark.parametrize("phrase", ["top 10 dayshift tools", "5 monthsary offers", "10 days2go"])
+    def test_a_unit_inside_a_longer_latin_word_is_not_a_window(self, phrase):
+        assert resolve_window(phrase)[0] == {"days": 30}
 
     def test_default_30(self):
         win, text = resolve_window("What changed in Japan?")

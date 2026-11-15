@@ -226,8 +226,11 @@ MODE_FALLBACK = "general"
 
 # ------------------------------------------------------------------ window --
 
-_WINDOW_DAYS = re.compile(r"(?:last\s+)?(\d+)\s*(?:days?|日|天)\b", re.IGNORECASE)
-_WINDOW_MONTHS = re.compile(r"(\d+)\s*(?:months?|ヶ月|个月|か月)\b", re.IGNORECASE)
+# CJK units are word characters, so `\b` after them fails whenever more CJK text follows
+# (过去3个月的变化). Only a following Latin letter or digit means the unit is not finished.
+_UNIT_END = r"(?![A-Za-z0-9_])"
+_WINDOW_DAYS = re.compile(r"(?:last\s+)?(\d+)\s*(?:days?\b|日|天)" + _UNIT_END, re.IGNORECASE)
+_WINDOW_MONTHS = re.compile(r"(\d+)\s*(?:months?\b|ヶ月|个月|か月)" + _UNIT_END, re.IGNORECASE)
 _WINDOW_QUARTER = re.compile(r"\b(quarter|quarterly)\b", re.IGNORECASE)
 
 

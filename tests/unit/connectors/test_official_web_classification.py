@@ -252,3 +252,22 @@ def test_load_official_rules_drops_malformed_entries():
 def test_load_official_rules_rejects_non_list_root():
     with pytest.raises(ValueError):
         load_official_rules(yaml_text="owner: acme")
+
+
+@pytest.mark.parametrize(
+    "url",
+    [
+        "https://acme.com:x@evil.org/login",
+        "https://acme.com@evil.org/",
+        "https://github.com:x@evil.org/acmehq/repo",
+        "https://github.com@evil.org/acmehq/repo",
+    ],
+)
+def test_userinfo_cannot_pass_for_an_official_host(classifier, url):
+    """A URL whose real host is evil.org must not be official because the text before @ looks right."""
+    assert classifier.classify_url(url).is_official is False
+
+
+def test_a_real_official_host_with_userinfo_and_port_is_still_official(classifier):
+    assert classifier.classify_url("https://user:pw@acme.com:8443/docs").is_official is True
+    assert classifier.classify_url("https://user@github.com/acmehq/repo").is_official is True

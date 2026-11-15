@@ -99,6 +99,7 @@ class YouTubeAdapter:
             "--no-warnings",
             "--no-download",
         ]
+        bounds = None
         if self.include_transcripts:
             from ._recency import search_bounds
             bounds = search_bounds(plan, request)

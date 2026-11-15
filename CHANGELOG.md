@@ -2,6 +2,18 @@
 
 Python 3.10 compatibility is exercised by the public CI matrix; recommendation ID construction avoids syntax that requires Python 3.12.
 
+## 0.2.2.dev5 — unreleased
+
+- Read relative time windows written next to more Chinese or Japanese text
+  (过去3个月的变化, 直近14日の動向); they previously fell back to 30 days.
+- Compare the real host of a URL, not the text before `@`, when deciding whether
+  it is an official domain.
+- Report a skipped Reddit archive search when a non-Latin query yields no
+  community name, instead of returning with no explanation.
+- Load `--model path/to/file.py`; the file form raised `UnboundLocalError`.
+- Accept a brief input with no context, and give the YouTube adapter an explicit
+  `bounds` default.
+
 ## 0.2.2.dev4 — 2026-10-05
 
 - Validate cited publication dates as dates without treating their digits as supported percentages.
