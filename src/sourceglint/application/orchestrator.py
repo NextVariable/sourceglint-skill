@@ -1,4 +1,4 @@
-"""Phase 7 §17–§19 — full-stack application orchestrator (compose only).
+"""full-stack application orchestrator (compose only).
 
 Composes Phase 3 → Phase 6C into one canonical run. Pure composition:
 no scoring, clustering, insight, recommendation or rendering logic lives

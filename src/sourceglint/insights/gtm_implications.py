@@ -1,4 +1,4 @@
-"""Phase 6A §24–§25, §28 — descriptive GTM implications + leakage guard.
+"""descriptive GTM implications + leakage guard.
 
 GTM implications are DESCRIPTIVE only (§5, §24):
   "Price sensitivity differs by segment" → OK (describes what the
@@ -168,7 +168,7 @@ def derive_gtm_implications(
             cached_resp = cache.get(key)
 
         if cached_resp is not None and cached_resp.ok:
-            implications_raw = cached_resp.payload.get("implications") or {}
+            implications_raw = cached_resp.payload.get("implications")
         else:
             payload: dict[str, Any] = {
                 "insight_id": ins_id,
@@ -198,9 +198,12 @@ def derive_gtm_implications(
                 )
                 continue
 
-            implications_raw = response.payload.get("implications") or {}
+            implications_raw = response.payload.get("implications")
 
-        # Validate
+        if not isinstance(implications_raw, Mapping):
+            rejected.append((ins_id, {}))
+            warnings.append(f"gtm_implications: insight {ins_id} implications must be an object")
+            continue
         violations = validate_gtm_implications(implications_raw)
         if violations:
             rejected.append((ins_id, dict(implications_raw)))

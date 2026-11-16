@@ -8,8 +8,8 @@ Byte-stable composition of the section builders in fixed order:
     4. What It Likely Means  9. Sources
     5. Recommended Actions
 
-Empty sections are dropped (§25). Plain Python string ops, no Jinja2,
-no clock/locale/random, no model, no network (Gate K). Reuses the Phase 2
+Empty sections are dropped. Plain Python string ops, no Jinja2,
+no clock/locale/random, no model, no network. Reuses the shared
 formatting layer via `sections` (heading/citation helpers imported from
 `sourceglint.rendering`).
 """
@@ -50,5 +50,5 @@ def render_brief_markdown(
 
 
 def render_no_evidence_markdown(context: Any = None) -> str:
-    """The fixed no-evidence document (Phase 6C §20)."""
+    """The fixed no-evidence document."""
     return sections.no_evidence_markdown(context)

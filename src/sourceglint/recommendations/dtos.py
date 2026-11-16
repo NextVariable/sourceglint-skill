@@ -1,4 +1,4 @@
-"""Phase 6B §7, §9, §10 — internal Recommendation DTOs.
+"""internal Recommendation DTOs.
 
 All of these are INTERNAL to the recommendation layer. None of them are
 written to a frozen schema. The only objects that reach a frozen
@@ -6,7 +6,7 @@ contract are:
   * Recommendation dicts produced by the pipeline — each validates
     against schemas/insight.schema.json as type=RECOMMENDATION
     (additionalProperties: false, action required);
-  * diagnostics kept OUT of the frozen schema (PRD §3, §25).
+  * diagnostics kept OUT of the frozen schema.
 """
 from __future__ import annotations
 
@@ -27,7 +27,7 @@ __all__ = [
 @dataclass(frozen=True)
 class PreparedInsight:
     """Deterministic, minimal view of one validated FACT/INFERENCE insight
-    that the recommendation model may cite (PRD §9).
+    that the recommendation model may cite.
 
     Only necessary decision context reaches the model: identity, type,
     statement, confidence, GTM implications, weak/contradiction metadata.
@@ -65,7 +65,7 @@ class RecommendationDraft:
     """Raw candidate recommendation from the model (internal).
 
     Code validates every field; nothing is trusted from the model
-    without a check (PRD §8, §32).
+    without a check.
     """
 
     statement: str
@@ -94,7 +94,7 @@ class RecommendationDraft:
 
 @dataclass(frozen=True)
 class RecommendationAssessment:
-    """Per-candidate actionability assessment from the model (PRD §20).
+    """Per-candidate actionability assessment from the model.
 
     Semantic fields the code cannot compute. All 0..1 except
     reversibility (high|medium|low). Used by the code-owned priority
@@ -152,7 +152,7 @@ class RecommendationSupport:
 @dataclass(frozen=True)
 class RecommendationDiagnostics:
     """Full explainability for one recommendation, OUT of the frozen
-    schema (PRD §3, §25). Priority / risk / traceability chain live here.
+    schema. Priority / risk / traceability chain live here.
     """
 
     insight_id: str

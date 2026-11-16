@@ -1,4 +1,4 @@
-"""Phase 6B §27 — deterministic Recommendation identity.
+"""deterministic Recommendation identity.
 
 Recommendation IDs are derived by CODE from stable structural inputs,
 never from free-text wording:
@@ -17,8 +17,7 @@ chain + class + dimensions, the ID stays stable.
 
 The output id satisfies the frozen common.schema.json insight_id pattern
 (^ins_[a-z0-9_]{1,64}$) — RECOMMENDATION lives inside the Insight schema
-and must reuse its id namespace (schema SoT beats the PRD §27 "rec_"
-suggestion).
+and uses the same ID namespace as facts and inferences.
 """
 from __future__ import annotations
 

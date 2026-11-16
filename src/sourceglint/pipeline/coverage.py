@@ -1,4 +1,4 @@
-"""CoverageReport (Phase 3 §19, Closeout §5).
+"""CoverageReport.
 
 Deterministic, non-LLM metadata artifact that accompanies a pipeline run.
 Captures the per-source outcomes, the counts of items flowing through each
@@ -112,7 +112,7 @@ def _distinct_preserve_first(items: Iterable[str]) -> tuple[str, ...]:
 def _partition_sources(
     statuses: Mapping[str, SourceStatusReport],
 ) -> tuple[list[str], list[str]]:
-    """Split statuses into (succeeded, failed) per Phase 3 §19 semantics.
+    """Split statuses into (succeeded, failed) for coverage reporting.
 
     Succeeded = status in {SUCCESS, PARTIAL}.
     Failed    = status in {UNAVAILABLE, AUTH_MISSING, RATE_LIMITED,

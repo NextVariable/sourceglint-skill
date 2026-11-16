@@ -1,9 +1,9 @@
-"""Phase 6A §29 — modular, versioned prompt registry for insight tasks.
+"""modular, versioned prompt registry for insight tasks.
 
 Each prompt is a separate markdown file with a single responsibility:
-no giant monolithic prompt (PRD §29).
+no giant monolithic prompt.
 
-Version strings are EXPLICIT and feed the semantic cache key (PRD §30),
+Version strings are EXPLICIT and feed the semantic cache key,
 so editing a prompt invalidates cached model output instead of silently
 reusing stale semantics.
 """

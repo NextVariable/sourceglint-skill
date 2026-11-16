@@ -1,4 +1,4 @@
-"""Phase 6B §29–§30 — recommendation conflict detection.
+"""recommendation conflict detection.
 
 Different insights may generate opposed actions ("raise price" vs
 "lower price"). This is NOT necessarily an error — it may apply to
@@ -13,7 +13,7 @@ renderer.
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Sequence
+from typing import Any, Mapping, Sequence
 
 from ..intelligence.cache import SemanticCache, build_cache_key
 from ..intelligence.dtos import ResearchContext
@@ -79,7 +79,7 @@ def detect_conflicts(
     if cache is not None:
         cached = cache.get(key)
     if cached is not None and cached.ok:
-        raw_groups = cached.payload.get("conflict_groups") or []
+        raw_groups = cached.rows("conflict_groups")
     else:
         payload: dict[str, Any] = {
             "recommendations": [
@@ -115,13 +115,25 @@ def detect_conflicts(
                 ),
                 model_status=response.status.value,
             )
-        raw_groups = response.payload.get("conflict_groups") or []
+        raw_groups = response.rows("conflict_groups")
+
+    if raw_groups is None:
+        return ConflictDetectionResult(
+            warnings=("rec_conflict: conflict_groups must be an array",),
+            model_status="invalid_output",
+        )
 
     conflicts: list[RecommendationConflict] = []
     warnings: list[str] = []
 
     for group in raw_groups:
-        ids = sorted({str(i) for i in (group.get("rec_ids") or [])})
+        if not isinstance(group, Mapping) or not isinstance(group.get("rec_ids"), list):
+            warnings.append("rec_conflict: dropped malformed group")
+            continue
+        ids = sorted({str(i) for i in group["rec_ids"]})
+        dimensions = group.get("gtm_dimensions")
+        if not isinstance(dimensions, list):
+            dimensions = []
         kind = str(group.get("kind") or "")
         if len(ids) < 2:
             warnings.append(f"rec_conflict: group smaller than 2 rec_ids: {ids}")
@@ -139,7 +151,7 @@ def detect_conflicts(
             kind=kind,
             rationale=str(group.get("rationale") or ""),
             gtm_dimensions=tuple(
-                str(d) for d in (group.get("gtm_dimensions") or []) if str(d)
+                d for d in dimensions if isinstance(d, str) and d
             ),
         ))
 
@@ -147,5 +159,5 @@ def detect_conflicts(
     return ConflictDetectionResult(
         conflicts=tuple(conflicts),
         warnings=tuple(warnings),
-        model_status="success",
+        model_status=("partial" if conflicts else "invalid_output") if warnings else "success",
     )

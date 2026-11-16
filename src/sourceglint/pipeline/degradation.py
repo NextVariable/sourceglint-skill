@@ -1,4 +1,4 @@
-"""Source-status taxonomy and graceful degradation (Phase 3 §18, §20).
+"""Source-status taxonomy and graceful degradation.
 
 The orchestrator wraps every source-adapter call in try/except and produces a
 SourceStatusReport per source. The pipeline continues when individual
@@ -24,7 +24,7 @@ from .adapters import (
 
 
 class SourceStatus(str, Enum):
-    """Per-source status taxonomy (PRD §18)."""
+    """Per-source status taxonomy."""
 
     SUCCESS = "success"
     PARTIAL = "partial"

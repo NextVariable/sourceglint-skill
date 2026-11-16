@@ -1,4 +1,4 @@
-"""Phase 6B §14, §20–§22 — assessment, priority and risk derivation.
+"""assessment, priority and risk derivation.
 
 Two responsibilities, split by the §8 boundary:
 
@@ -13,6 +13,7 @@ frozen Phase 2 Signal Score (§21).
 """
 from __future__ import annotations
 
+from math import isfinite
 from dataclasses import dataclass, field
 from typing import Any, Mapping, Sequence
 
@@ -244,7 +245,7 @@ def assess_recommendations(
     cache: SemanticCache | None = None,
     insight_diagnostics: Mapping[str, Mapping[str, Any]] | None = None,
 ) -> AssessmentResult:
-    """Assess + score validated candidate drafts (PRD §14, §20–§22).
+    """Assess + score validated candidate drafts.
 
     For every validated draft: derive the recommendation id, the code
     support chain, call the model once for actionability, clamp
@@ -444,4 +445,6 @@ def _parse_assessment(
 
 def _clamp01(value: Any) -> float:
     v = float(value or 0.0)
+    if not isfinite(v):
+        raise ValueError("Assessment scores must be finite")
     return max(0.0, min(1.0, v))

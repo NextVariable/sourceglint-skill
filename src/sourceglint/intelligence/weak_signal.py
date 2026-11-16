@@ -1,4 +1,4 @@
-"""Phase 5 §17 — weak-signal detection, free of engagement bias.
+"""weak-signal detection, free of engagement bias.
 
 A weak signal is a SMALL, EARLY trace of something that could matter:
 few mentions (low volume), often with little engagement, but backed by

@@ -1,4 +1,4 @@
-"""ResearchPipeline orchestrator (Phase 3 §23).
+"""ResearchPipeline orchestrator.
 
 Sequential pipeline:
 

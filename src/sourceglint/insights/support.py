@@ -1,4 +1,4 @@
-"""Phase 6A §16 — support_strength diagnostics.
+"""support_strength diagnostics.
 
 support_strength is an INTERNAL diagnostics metric (§16) that estimates
 how well supported an insight is from structural quantities — never a

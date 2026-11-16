@@ -1,11 +1,11 @@
-"""Phase 6B §12–§14, §16 — deterministic support computation & confidence.
+"""deterministic support computation & confidence.
 
 Everything here is CODE. The model never reports support metrics (§13),
 never sets its own priority or confidence cap (§14).
 
 support chain: a recommendation cites supporting insight ids; its
 signal/evidence sets are the UNION over those insights (code-derived,
-PRD §3 traceability: Recommendation → Insight → Signal → Evidence).
+traceability: Recommendation → Insight → Signal → Evidence).
 """
 from __future__ import annotations
 

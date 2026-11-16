@@ -1,4 +1,4 @@
-"""Phase 6A §15–§20, §27, §35 — INFERENCE synthesis + validation.
+"""INFERENCE synthesis + validation.
 
 INFERENCE synthesis: model combines FACTs + Signals into higher-order
 inferences. Code validates support, inference distance, evidence scope,
@@ -77,7 +77,7 @@ def validate_inference(
     fact_evidence_map: Mapping[str, set[str]],
     signal_evidence_map: Mapping[str, set[str]],
 ) -> list[str]:
-    """Code-side INFERENCE guardrails (PRD §16, §27, §35).
+    """Code-side INFERENCE guardrails.
 
     Returns a list of violation strings (empty = valid). Hallucinated
     refs are REJECTED — never stripped or repaired (§32: No Silent Repair).
@@ -185,7 +185,7 @@ def _build_inference_payload(
             "evidence_ids": list(f.evidence_ids),
             "confidence": f.confidence,
         }
-        for f, fid in zip(facts, fact_insight_ids)
+        for f, fid in zip(facts, fact_insight_ids, strict=True)
     ]
     signals_payload = [ps.to_model_payload() for ps in prepared_signals]
 
@@ -212,7 +212,7 @@ def synthesize_inferences(
     research_context: ResearchContext | None = None,
     cache: SemanticCache | None = None,
 ) -> InferenceSynthesisResult:
-    """FACT[] + Signal[] → INFERENCE[] (PRD §15, §19).
+    """FACT[] + Signal[] → INFERENCE[].
 
     Calls the model with inference_synthesis task. Parses response into
     InferenceDraft objects. Validates each draft against support, evidence
@@ -226,11 +226,11 @@ def synthesize_inferences(
     valid_signal_ids = {ps.signal_id for ps in prepared_signals}
     fact_evidence_map = {
         fid: set(f.evidence_ids)
-        for f, fid in zip(facts, fact_insight_ids)
+        for f, fid in zip(facts, fact_insight_ids, strict=True)
     }
     signal_evidence_map = {ps.signal_id: set(ps.evidence_ids) for ps in prepared_signals}
     fact_confidence_by_id = {
-        fid: f.confidence for f, fid in zip(facts, fact_insight_ids)
+        fid: f.confidence for f, fid in zip(facts, fact_insight_ids, strict=True)
     }
 
     # Build cache key (§30: includes fact structural IDs)

@@ -355,3 +355,11 @@ def test_leakage_detection_returns_the_phrases():
 
 def test_leakage_detection_handles_empty_text():
     assert detect_recommendation_leakage("") == []
+
+
+@pytest.mark.parametrize("payload", [None, [], "unexpected"])
+def test_success_requires_an_object_payload(payload):
+    response = ModelResponse("clustering", ModelStatus.SUCCESS, payload)
+    assert response.status is ModelStatus.INVALID_OUTPUT
+    assert not response.ok
+    assert response.rows("clusters") is None

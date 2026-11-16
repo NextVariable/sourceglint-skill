@@ -1,4 +1,4 @@
-"""Phase 6B §6, §30, §31 — the Recommendation pipeline orchestrator.
+"""the Recommendation pipeline orchestrator.
 
 Validated FACT/INFERENCE Insights
   → generate_candidate_recommendations()   (model + code)

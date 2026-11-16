@@ -18,7 +18,7 @@ from typing import Any, Mapping, Protocol, runtime_checkable
 
 DEFAULT_USER_AGENT = "sourceglint/0.2.0"
 DEFAULT_TIMEOUT_SECONDS = 15.0
-DEFAULT_MAX_ATTEMPTS = 3  # 1 initial + 2 retries (PRD §11: 2-3 attempts)
+DEFAULT_MAX_ATTEMPTS = 3  # 1 initial + 2 retries
 DEFAULT_BACKOFF_SECONDS = 0.5  # bounded; tests inject a 0 to skip sleeps
 
 
@@ -30,11 +30,11 @@ class HttpError(Exception):
 
 
 class HttpTransientError(HttpError):
-    """5xx / 429 / timeout — may be retried per PRD §11."""
+    """5xx / 429 / timeout — may be retried."""
 
     def __init__(self, status: int | None, url: str, body_preview: str = "") -> None:
         # Never include the response body in the message text — only a
-        # length count, to honor PRD §14 (no secret-shaped values echo).
+        # length count, without including the response body.
         body_kb = len(body_preview) if body_preview else 0
         if status is None:
             super().__init__(f"transient error fetching {url} (no status); body {body_kb} bytes")
@@ -47,7 +47,7 @@ class HttpTransientError(HttpError):
 
 
 class HttpPermanentError(HttpError):
-    """4xx (excluding 429) — must NOT be retried (PRD §11)."""
+    """4xx (excluding 429) — must NOT be retried."""
 
     def __init__(self, status: int, url: str) -> None:
         super().__init__(f"permanent error fetching {url} (status={status})")
@@ -56,7 +56,7 @@ class HttpPermanentError(HttpError):
 
 
 class HttpTimeoutError(HttpError):
-    """The request exceeded its budget (PRD §11)."""
+    """The request exceeded its budget."""
 
     def __init__(self, url: str, timeout: float) -> None:
         super().__init__(f"timeout fetching {url} after {timeout}s")
@@ -92,7 +92,7 @@ class HttpClient(Protocol):
 
     Concrete implementations:
       * StdlibHttpClient   — production / live path
-      * RecorderHttpClient — test double (PRD fixture-parity pattern)
+      * RecorderHttpClient — fixture-backed test double
     """
 
     user_agent: str
@@ -121,7 +121,7 @@ class StdlibHttpClient:
     default_timeout: float = DEFAULT_TIMEOUT_SECONDS
     max_attempts: int = DEFAULT_MAX_ATTEMPTS
     backoff_seconds: float = DEFAULT_BACKOFF_SECONDS
-    # Injectable sleep hook for tests (PRD §11: avoid test sleep).
+    # Injectable sleep hook for tests (avoid test sleep).
     sleep: callable = staticmethod(time.sleep)
 
     def request(
@@ -160,8 +160,8 @@ class StdlibHttpClient:
                 except Exception:  # pragma: no cover - sleep injection is best-effort
                     pass
                 continue
-            except (HttpPermanentError,):
-                # No retry on permanent client errors (PRD §11).
+            except HttpPermanentError:
+                # No retry on permanent client errors.
                 raise
             except HttpTimeoutError as exc:
                 last_exc = exc
@@ -192,7 +192,7 @@ class StdlibHttpClient:
         if headers:
             for k, v in headers.items():
                 if k.lower() == "user-agent":
-                    continue  # never let caller override UA (PRD §12)
+                    continue  # never let caller override UA
                 merged[k] = v
         body: bytes | None = None
         if json_data is not None:

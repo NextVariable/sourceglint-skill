@@ -1,12 +1,12 @@
-"""Phase 5 §5 / §27 / §40 — the host-neutral IntelligenceModel boundary.
+"""the host-neutral IntelligenceModel boundary.
 
 The core defines a NEUTRAL protocol. No commercial LLM provider is
 named, imported, or depended on anywhere in this package (enforced by a
 regression test). Host integrations implement the protocol outside this
 repository and inject an instance at runtime; swapping the provider must
-not require a single change to the intelligence core (PRD §40).
+not require a single change to the intelligence core.
 
-Implementation order mandated by PRD §40:
+Supported model implementations:
     1. protocol           → this module
     2. fake model         → FakeIntelligenceModel
     3. fixture model      → FixtureIntelligenceModel
@@ -14,7 +14,7 @@ Implementation order mandated by PRD §40:
     5. tests
     6. optional host model example (NOT in this repo)
 
-Failure semantics (PRD §27): model problems are reported as a STATUS,
+Failure semantics: model problems are reported as a STATUS,
 never as an exception that escapes into the deterministic core.
 `IntelligencePipelineError` is raised only when a *required* step
 (clustering) has no usable output at all.
@@ -31,7 +31,7 @@ from .prompts import TASK_CLUSTERING, TASK_CONTRADICTION, TASK_SEMANTIC_FACTORS
 
 
 class ModelStatus(str, Enum):
-    """PRD §27 status taxonomy."""
+    """status taxonomy."""
 
     SUCCESS = "success"
     INVALID_OUTPUT = "invalid_output"
@@ -51,6 +51,12 @@ class ModelResponse:
     payload: Mapping[str, Any] | None = None
     error: str = ""
 
+    def __post_init__(self) -> None:
+        if self.status is ModelStatus.SUCCESS and not isinstance(self.payload, Mapping):
+            object.__setattr__(self, "status", ModelStatus.INVALID_OUTPUT)
+            object.__setattr__(self, "payload", None)
+            object.__setattr__(self, "error", "Model payload must be an object")
+
     def rows(self, key: str) -> list[Any] | None:
         """Read a structured array even when a custom host skipped validation."""
         value = self.payload.get(key) if isinstance(self.payload, Mapping) else None
@@ -66,7 +72,7 @@ class IntelligenceModel(Protocol):
     """Host-neutral structured-completion contract.
 
     `complete_structured` must return a ModelResponse — it must NOT raise
-    for ordinary model failure. Structured output is mandatory (PRD §26):
+    for ordinary model failure. Structured output is mandatory:
     the caller supplies `response_schema` and the implementation is
     responsible for producing output that conforms to it (or reporting
     INVALID_OUTPUT).
@@ -84,7 +90,7 @@ class IntelligenceModel(Protocol):
     ) -> ModelResponse: ...
 
 
-# --- JSON schemas the model output must satisfy (PRD §26) -------------------
+# --- JSON schemas the model output must satisfy -------------------
 
 CLUSTERING_RESPONSE_SCHEMA: Mapping[str, Any] = {
     "type": "object",
@@ -139,7 +145,7 @@ SEMANTIC_FACTORS_RESPONSE_SCHEMA: Mapping[str, Any] = {
 }
 
 
-# --- deterministic fake (PRD §40 step 2) -----------------------------------
+# --- deterministic fake -----------------------------------
 
 
 @dataclass(frozen=True)
@@ -170,8 +176,7 @@ class FakeClusterScript:
 @dataclass
 class FakeIntelligenceModel:
     """Deterministic, offline, scripted model. Used by every unit test and
-    by the Phase 5 golden case — the default suite is 100% offline
-    (PRD §5, Gate I).
+    by the Phase 5 golden case — the default suite is 100% offline.
     """
 
     scripts: Sequence[FakeClusterScript] = ()
@@ -294,7 +299,7 @@ class FakeIntelligenceModel:
 @dataclass
 class FixtureIntelligenceModel:
     """Fixture-driven model: scripts are plain dicts so they can be loaded
-    from a JSON/YAML fixture file (PRD §40 step 3). Same code path as
+    from a JSON/YAML fixture file. Same code path as
     FakeIntelligenceModel — there is no separate test-only parsing.
     """
 

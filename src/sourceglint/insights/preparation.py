@@ -1,7 +1,7 @@
-"""Phase 6A §10 — deterministic signal preparation for insight synthesis.
+"""deterministic signal preparation for insight synthesis.
 
-Everything here is CODE (PRD §6): stable ordering, evidence summary
-extraction, code-computed counts (PRD §37), weak-signal flag injection.
+Everything here is CODE: stable ordering, evidence summary
+extraction, code-computed counts, weak-signal flag injection.
 
 The model never sees: score, confidence, engagement, URL, raw_metadata.
 """
@@ -34,7 +34,7 @@ def _count_windows(
     evidence_ids: Iterable[str],
     evidence_by_id: Mapping[str, Mapping[str, Any]],
 ) -> tuple[int, int]:
-    """Count current vs baseline evidence (code-computed, PRD §37)."""
+    """Count current vs baseline evidence (code-computed)."""
     current = 0
     baseline = 0
     for eid in evidence_ids:

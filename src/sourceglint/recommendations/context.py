@@ -1,4 +1,4 @@
-"""Phase 6B §9 — deterministic decision-context preparation.
+"""deterministic decision-context preparation.
 
 Turns validated Phase 6A FACT/INFERENCE insight dicts into minimal
 PreparedInsight objects for the recommendation model. Everything here

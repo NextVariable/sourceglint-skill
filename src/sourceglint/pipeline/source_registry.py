@@ -1,10 +1,10 @@
-"""Source Registry runtime loader/validator (Phase 3 §22).
+"""Source Registry runtime loader/validator.
 
 Loads config/sources.yaml, validates against schemas/source_registry.schema.json,
 and exposes a deterministic ordered list of SourceEntry records.
 
 The runtime loader does NOT call any source. It is the configuration SoT
-read by the orchestrator (Phase 3 §23) and the doctor command (Phase 8).
+read by the orchestrator and the doctor command.
 
 The schema enforces:
   - source `name` is lowercase snake_case (^[a-z][a-z0-9_]*$) — it is the

@@ -1,4 +1,4 @@
-"""Phase 5 §19–§24 — factor derivation for the frozen Phase 2 scorer.
+"""factor derivation for the fixed scoring formula.
 
 The five score factors and who computes them:
 
@@ -7,11 +7,11 @@ The five score factors and who computes them:
   evidence_quality    — CODE: mean of member evidence_quality. Members with
                         no quality are skipped; if NONE are known the value
                         is 0.0 with a warning — never 0.5 (Closeout §3).
-  recency             — CODE, deterministic (PRD §22): exponential decay
+  recency             — CODE, deterministic: exponential decay
                         over the YOUNGEST member's age at `as_of`
                         (recency = 0.5 ** (age_days / 30)). No published
                         date ⇒ not assessed ⇒ 0.0 + warning.
-  market_signal       — CODE (PRD §23): discussion breadth dominates,
+  market_signal       — CODE: discussion breadth dominates,
                         engagement is a weak contributor only.
                         breadth = min(1, independent_sources / 2)
                         depth   = min(1, log1p(engagement) / log1p(500))
@@ -72,7 +72,7 @@ _DR_KEY = "decision_relevance"
 
 @dataclass(frozen=True)
 class FactorSet:
-    """All five score factors + diagnostics for one cluster (PRD §24)."""
+    """All five score factors + diagnostics for one cluster."""
 
     cluster_id: str
     decision_relevance: float = 0.0
@@ -117,7 +117,7 @@ def _as_utc(value: str) -> datetime | None:
         return None
     if parsed.tzinfo is None:
         # Naive timestamps are treated as UTC — never the host local zone —
-        # so recency stays byte-identical across machines (PRD §22).
+        # so recency stays byte-identical across machines.
         parsed = parsed.replace(tzinfo=timezone.utc)
     return parsed.astimezone(timezone.utc)
 
@@ -162,7 +162,7 @@ def code_novelty(features: SignalFeatures) -> tuple[float, list[str]]:
 
 
 def market_signal_factor(features: SignalFeatures) -> float:
-    """0.6 breadth + 0.4 depth (PRD §23: engagement ≠ market signal).
+    """0.6 breadth + 0.4 depth (engagement ≠ market signal).
 
     Breadth starts only at the SECOND independent origin: one lone
     origin is a single voice, not a market discussion (breadth =
@@ -280,7 +280,7 @@ def derive_factors(
 
     `model=None` is allowed for deterministic-only tests / partial runs:
     decision relevance is then NOT assessed (0.0 + degraded) rather than
-    invented. `cache` skips repeated semantic calls (PRD §28).
+    invented. `cache` skips repeated semantic calls.
     """
     members = [
         evidence_by_id[eid] for eid in cluster.evidence_ids if eid in evidence_by_id

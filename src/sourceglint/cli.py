@@ -1,4 +1,4 @@
-"""Phase 7 §22–§24, §53–§55 — minimal host-neutral CLI.
+"""minimal host-neutral CLI.
 
     sourceglint "recent Japan AI meeting assistant market changes" \\
         [--mode market] [--market jp] [--window 30] [--language en] \\

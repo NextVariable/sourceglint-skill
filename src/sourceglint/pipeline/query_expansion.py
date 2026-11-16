@@ -1,4 +1,4 @@
-"""Deterministic query expansion (Phase 3 §4, §5).
+"""Deterministic query expansion.
 
 No LLM. No network. No clock.
 
@@ -22,10 +22,10 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Mapping, Sequence
 
-# Per Phase 3 PRD §28 — keep <24 hard cap so downstream pipelines don't blow up.
+# keep <24 hard cap so downstream pipelines don't blow up.
 QUERY_EXPANSION_MAX = 24
 
-# Per PRD §4 — finite intent enum. Adding new labels requires a deliberate WHY
+# finite intent enum. Adding new labels requires a deliberate WHY
 # (and likely an ADR), not ad-hoc test additions.
 ALL_INTENTS: tuple[str, ...] = (
     "exact",
@@ -39,7 +39,7 @@ ALL_INTENTS: tuple[str, ...] = (
     "emerging_terminology",
 )
 
-# Per PRD §4 — mode → priority order of intents. The first N are emitted
+# mode → priority order of intents. The first N are emitted
 # (subject to language availability + cap).
 MODE_INTENT_PRIORITY: Mapping[str, tuple[str, ...]] = {
     "competitor": (

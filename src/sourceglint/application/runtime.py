@@ -1,4 +1,4 @@
-"""Phase 7 §25–§26 — default runtime wiring for the canonical API/CLI.
+"""default runtime wiring for the canonical API/CLI.
 
 The core engine is host-neutral; a host injects the model and (usually)
 its own adapters. This module provides the *defaults* used when a caller

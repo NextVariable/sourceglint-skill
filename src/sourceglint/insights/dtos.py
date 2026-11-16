@@ -1,4 +1,4 @@
-"""Phase 6A §9 — internal Insight DTOs.
+"""internal Insight DTOs.
 
 These are INTERNAL to the insight layer. None of them are written to
 the frozen insight.schema.json. The only object that ever reaches a
@@ -13,7 +13,7 @@ Design principles (matching Phase 5 dtos.py):
   * diagnostics can be carried alongside insights WITHOUT polluting the
     frozen schema;
   * model payloads are minimal — score, confidence, URL, engagement,
-    raw_metadata are NEVER sent to the model (PRD §10, §37).
+    raw_metadata are NEVER sent to the model.
 """
 from __future__ import annotations
 
@@ -42,11 +42,11 @@ class PreparedSignal:
 
     Carries only what the model needs for FACT/INFERENCE synthesis:
     identity, type, claim, evidence refs, supporting/counter summaries,
-    market, language, and CODE-COMPUTED counts (PRD §37: the model never
+    market, language, and CODE-COMPUTED counts (the model never
     counts — counts are injected by code).
 
     Deliberately EXCLUDED from to_model_payload():
-      - score (code-owned, PRD §6)
+      - score (code-owned)
       - confidence (code-owned)
       - engagement (code-owned)
       - url (model never sees URLs, ADR-0001 D7)
@@ -68,7 +68,7 @@ class PreparedSignal:
     weak_signal: bool = False
 
     def to_model_payload(self) -> dict:
-        """Minimal, size-bounded payload for the insight model (PRD §10).
+        """Minimal, size-bounded payload for the insight model.
 
         Empty optionals are OMITTED rather than sent as "" — the model must
         not infer "unknown" as a neutral middle value (Closeout §3 invariant).
@@ -116,7 +116,7 @@ class FactDraft:
 
     The model produces the statement + confidence + rationale. Code
     derives the insight_id, validates signal_ids/evidence_ids, and checks
-    grounding (PRD §12–§14).
+    grounding.
     """
 
     statement: str
@@ -141,12 +141,12 @@ class InferenceDraft:
 
     The model produces the statement + confidence + rationale. Code
     derives the insight_id, validates fact_ids/signal_ids/evidence_ids,
-    and checks inference support (PRD §15–§17).
+    and checks inference support.
 
-    inference_distance (PRD §27):
+    inference_distance:
       0 = direct abstraction from one signal
       1 = simple synthesis across 2+ facts/signals
-      2 = multi-step interpretation (MVP cap, PRD §27)
+      2 = multi-step interpretation (MVP cap)
     """
 
     statement: str
@@ -173,7 +173,7 @@ class InferenceDraft:
 class GTMImplicationDraft:
     """Descriptive GTM implication mapping from the model (internal).
 
-    Values are DESCRIPTIVE only (PRD §5, §24): "Price sensitivity differs
+    Values are DESCRIPTIVE only: "Price sensitivity differs
     by segment" is allowed; "Lower price to $9" is NOT (that is a
     Recommendation, Phase 6B). The recommendation leakage guard (§28)
     screens these values.
@@ -192,9 +192,9 @@ class GTMImplicationDraft:
 @dataclass(frozen=True)
 class InsightDiagnostics:
     """Full score/trace explainability for one insight, kept OUT of the
-    frozen schema (PRD §25).
+    frozen schema.
 
-    Carries support_strength (PRD §16), inference_distance (PRD §27),
+    Carries support_strength, inference_distance,
     and the full supporting fact/signal/evidence chain for audit.
     """
 
@@ -226,11 +226,11 @@ class InsightDiagnostics:
 
 @dataclass(frozen=True)
 class InsightPipelineResult:
-    """Phase 6A output (PRD §31).
+    """Validated facts and inferences.
 
     Carries validated insight dicts (conforming to insight.schema.json)
     and diagnostics. Explicitly carries NO recommendation, no GTM action
-    strategy, no final brief (PRD §48 stop boundary).
+    strategy, no final brief.
     """
 
     insights: tuple[dict, ...] = ()

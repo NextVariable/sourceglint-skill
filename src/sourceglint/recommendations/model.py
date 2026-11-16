@@ -1,6 +1,6 @@
-"""Phase 6B §8 — recommendation tasks + response schemas + deterministic fake.
+"""recommendation tasks + response schemas + deterministic fake.
 
-Reuses the Phase 5/6A IntelligenceModel boundary (PRD §7, §8). New task
+Reuses the shared IntelligenceModel interface. New task
 constants, prompt versions, JSON response schemas and a deterministic
 FakeRecommendationModel extend the existing fakes so tests drive the
 whole 6A→6B chain offline.
@@ -20,13 +20,13 @@ from ..insights.gtm_implications import GTM_DIMENSIONS
 from .policy import ACTION_CLASSES, REVERSIBILITY_VALUES
 from .ids import derive_recommendation_id
 
-#: Task identifiers (PRD §31 — modular, single-responsibility prompts).
+#: Task identifiers (modular, single-responsibility prompts).
 TASK_RECOMMENDATION_GENERATION = "recommendation_generation"
 TASK_RECOMMENDATION_ASSESSMENT = "recommendation_assessment"
 TASK_RECOMMENDATION_DEDUP = "recommendation_dedup"
 TASK_RECOMMENDATION_CONFLICT = "recommendation_conflict"
 
-#: Prompt versions — bump when a .md changes semantics (PRD §31).
+#: Prompt versions — bump when a Markdown prompt changes semantics.
 PROMPT_VERSIONS: dict[str, str] = {
     TASK_RECOMMENDATION_GENERATION: "recommendation_generation:v1",
     TASK_RECOMMENDATION_ASSESSMENT: "recommendation_assessment:v1",
@@ -41,7 +41,7 @@ CONFLICT_HORIZON = "time_horizon_specific"
 CONFLICT_KINDS = (CONFLICT_TRUE, CONFLICT_SEGMENT, CONFLICT_HORIZON)
 
 
-# --- JSON schemas the model output must satisfy (PRD §26) -------------------
+# --- JSON schemas the model output must satisfy -------------------
 
 
 def _dimension_items() -> dict[str, Any]:

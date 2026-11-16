@@ -148,7 +148,7 @@ def _select_insight_layer(
 
     Weak-signal insights are EXCLUDED here (§14): they surface only in
     the Emerging Signals section so users can always tell weak from
-    confirmed cross-source evidence. Ranking (Phase 6C §9):
+    confirmed cross-source evidence. Ranking:
       * FACT:      support strength DESC → confidence DESC → stable id
       * INFERENCE: confidence DESC → support strength DESC → stable id
     (Decision relevance is not exposed as a numeric field by 6A/6B;
@@ -245,7 +245,7 @@ def _select_recommendations(
     Global order: priority bucket (now → next → watch) → raw priority
     score DESC → confidence DESC → risk (LOW first) → stable insight_id.
     The cap applies to the GLOBAL list (deterministic drop of the tail),
-    per Phase 6C §34; rendering then regroups the survivors into buckets.
+    and rendering then regroups the survivors into buckets.
     """
     items: list[Any] = []
     for rec in recommendations:

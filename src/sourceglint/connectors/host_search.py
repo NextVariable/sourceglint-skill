@@ -1,4 +1,4 @@
-"""Host Web Search capability adapter (Phase 4 §4-§5).
+"""Host Web Search capability adapter.
 
 Architecture:
 
@@ -14,7 +14,7 @@ The CORE repository defines only the neutral capability contract. Harness-
 specific implementations live in the host integration layer and inject
 their capability into the pipeline.
 
-Compliance with PRD:
+Adapter responsibilities:
   * No harness-vendor-specific imports inside this module.
   * Adapter does NOT generate evidence_id, write to ledger, score, or
     call any LLM — those are all downstream.
@@ -102,7 +102,7 @@ class SearchCapabilityTimeout(AdapterError):
 # ---------- Adapter -----------------------------------------------------
 
 
-# PRD §16: MVP default max-per-query for Host Web Search.
+# MVP default max-per-query for Host Web Search.
 DEFAULT_MAX_PER_QUERY = 20
 
 
@@ -113,7 +113,7 @@ class HostWebSearchAdapter:
     Args:
       capability        — injected by the host integration layer. Pass None
                           to force AdapterUnavailable on every retrieve.
-      max_per_query     — hard cap; values above this are clamped (PRD §16).
+      max_per_query     — hard cap; values above this are clamped.
       source_name       — defaults to "host_web_search"; pass alternate for
                           testing both SourceAdapter.name shims (kept stable
                           to match the source registry entry).
@@ -147,13 +147,13 @@ class HostWebSearchAdapter:
                 reason="retrieval request missing query",
             )
 
-        # PRD §6: official classification is a SEPARATE stage; the host
+        # official classification is a SEPARATE stage; the host
         # web search adapter must NOT decide first-party-ness on its own.
         # We just pass market / language through unchanged.
         language = str(request.get("query_language") or "")
         market = str(request.get("market") or "")
 
-        # Resolve the limit. PRD §16 default + per-source override.
+        # Apply the default cap or the per-source override.
         limit_req = request.get("limit")
         try:
             limit_n = int(limit_req) if limit_req is not None else self.max_per_query

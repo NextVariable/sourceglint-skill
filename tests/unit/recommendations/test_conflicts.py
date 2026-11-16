@@ -167,3 +167,16 @@ class TestConflictDetection:
     def test_kind_enum_contract(self):
         # Frozen kinds — regression guard for the classifier vocabulary.
         assert CONFLICT_KINDS == (CONFLICT_TRUE, CONFLICT_SEGMENT, CONFLICT_HORIZON)
+
+
+def test_malformed_conflict_group_keeps_valid_group():
+    items = [_assessed("ins_rec_a"), _assessed("ins_rec_b")]
+    model = StubModel(payload={"conflict_groups": [42, {
+        "rec_ids": [item.insight_id for item in items], "kind": CONFLICT_TRUE,
+    }]})
+
+    result = detect_conflicts(items, model=model)
+
+    assert len(result.conflicts) == 1
+    assert result.model_status == "partial"
+    assert any("malformed group" in warning for warning in result.warnings)

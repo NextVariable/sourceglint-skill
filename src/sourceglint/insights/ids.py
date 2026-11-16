@@ -1,4 +1,4 @@
-"""Deterministic identity for Insights (PRD §21).
+"""Deterministic identity for Insights.
 
 Insight identity is derived by CODE from structural inputs — never from
 a model statement. Two runs that build an insight from the same type +
@@ -33,7 +33,7 @@ FACT = "FACT"
 INFERENCE = "INFERENCE"
 RECOMMENDATION = "RECOMMENDATION"
 
-#: Allowed types for Phase 6A (PRD §2: FACT + INFERENCE only).
+#: Allowed types for facts and inferences.
 PHASE6A_TYPES = frozenset({FACT, INFERENCE})
 
 
@@ -55,10 +55,10 @@ def derive_insight_id(
 
     Sorting makes the id independent of model output order and of signal
     ordering. Empty signal_ids or evidence_ids is a programming error —
-    an insight without structural support cannot exist (PRD §14, §16).
+    an insight without structural support cannot exist.
 
     The `type` is part of the hash so a FACT and an INFERENCE built from
-    the same evidence set are distinct insights (PRD §21).
+    the same evidence set are distinct insights.
     """
     sig = sorted({str(s) for s in signal_ids if str(s)})
     evi = sorted({str(e) for e in evidence_ids if str(e)})

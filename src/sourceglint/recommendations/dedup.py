@@ -1,4 +1,4 @@
-"""Phase 6B §28 — semantic recommendation dedup (Phase 6A residual risk).
+"""semantic recommendation dedup (Phase 6A residual risk).
 
 Phase 6A shipped deterministic structural + signal-overlap dedup only;
 the model-assisted semantic duplicate grouping task existed but was not
@@ -120,7 +120,7 @@ def _semantic_dedup(
     if cache is not None:
         cached = cache.get(key)
     if cached is not None and cached.ok:
-        raw_groups = cached.payload.get(_DEDUP_GROUP_KEY) or []
+        raw_groups = cached.rows(_DEDUP_GROUP_KEY)
     else:
         payload: dict[str, Any] = {
             "candidates": [
@@ -153,7 +153,10 @@ def _semantic_dedup(
                 f"rec_dedup: model {response.status.value}: {response.error}; "
                 f"semantic dedup skipped"
             ]
-        raw_groups = response.payload.get(_DEDUP_GROUP_KEY) or []
+        raw_groups = response.rows(_DEDUP_GROUP_KEY)
+
+    if raw_groups is None:
+        return list(candidates), [], [], ["rec_dedup: duplicate_groups must be an array"]
 
     # Validate groups (code): ids exist, group ≥ 2, no hallucinated ids.
     removed: list[AssessedRecommendation] = []
@@ -162,7 +165,10 @@ def _semantic_dedup(
     warnings: list[str] = []
 
     for group in raw_groups:
-        ids = [str(i) for i in group]
+        if not isinstance(group, list) or any(not isinstance(item, str) for item in group):
+            warnings.append("rec_dedup: ignored malformed duplicate group")
+            continue
+        ids = group
         bad = [i for i in ids if i not in by_id]
         if bad:
             warnings.append(f"rec_dedup: hallucinated rec_id in duplicate group: {bad}")

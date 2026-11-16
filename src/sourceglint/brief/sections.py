@@ -8,8 +8,7 @@ Every builder is a PURE formatter over an already-selected
   * the renderer never adds a semantic sentence of its own.
 
 Reuses the Phase 2 rendering helpers (`rendering._heading` et al.) so
-there is exactly one formatting layer for headings/bullets/citations
-(Phase 6C §41) — no second renderer contract is maintained.
+there is exactly one formatting layer for headings/bullets/citations — no second renderer contract is maintained.
 """
 from __future__ import annotations
 

@@ -1,4 +1,4 @@
-"""Deterministic Time Filtering (Phase 3 §13/§14).
+"""Deterministic Time Filtering.
 
 The filter is purely time-based — caller controls whether the window is
 'current' or 'baseline' by setting Evidence.window upstream. The filter
@@ -16,7 +16,7 @@ from typing import Iterable, Mapping
 from rfc3339_validator import validate_rfc3339
 
 
-# A tiny set of recognized drop reasons — used by Coverage Report (Phase 3 §19).
+# A tiny set of recognized drop reasons — used by Coverage Report.
 DROP_REASON_MISSING = "missing_published_at"
 DROP_REASON_INVALID_TS = "invalid_timestamp"
 DROP_REASON_OUTSIDE_PREFIX = "outside_window"

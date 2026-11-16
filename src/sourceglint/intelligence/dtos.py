@@ -1,4 +1,4 @@
-"""Phase 5 internal DTOs (PRD §37).
+"""Internal types for semantic analysis.
 
 These are INTERNAL to the intelligence layer. None of them are written to
 the frozen Evidence / Signal schemas. The only object that ever reaches a
@@ -21,7 +21,7 @@ from typing import Any, Mapping
 WINDOW_CURRENT = "current"
 WINDOW_BASELINE = "baseline"
 
-#: Contradiction kinds (PRD §16). `contextual` covers segment disagreement
+#: Contradiction kinds. `contextual` covers segment disagreement
 #: (enterprise positive vs consumer negative) which must NOT be reported as
 #: a factual contradiction.
 CONTRADICTION_NONE = "none"
@@ -31,7 +31,7 @@ CONTRADICTION_CONTEXTUAL = "contextual"
 
 #: Hard caps applied to the model payload. Evidence snippets are already
 #: capped at 280 by the Evidence contract; the title cap is new because
-#: titles carry no schema cap but must not blow up the prompt (PRD §9).
+#: titles carry no schema cap but must not blow up the prompt.
 MAX_TITLE_CHARS = 200
 MAX_SNIPPET_CHARS = 280
 
@@ -57,9 +57,9 @@ def _as_tuple(values: Any) -> tuple:
 class PreparedEvidence:
     """Deterministic, size-bounded view of one ledger evidence item.
 
-    `url` is retained because PRD §13 source-independence math needs the
+    `url` is retained because source-independence analysis needs the
     canonical URL and its domain. It is deliberately EXCLUDED from
-    `to_model_payload()` (PRD §6: URL is not required for semantic
+    `to_model_payload()` (URL is not required for semantic
     judgement).
     """
 
@@ -88,7 +88,7 @@ class PreparedEvidence:
         max_snippet_chars: int = MAX_SNIPPET_CHARS,
         max_content_chars: int = 6000,
     ) -> dict:
-        """Minimal, size-bounded payload for the semantic model (PRD §6).
+        """Minimal, size-bounded payload for the semantic model.
 
         Empty optionals are OMITTED rather than sent as "" — the model must
         not infer "unknown" as a neutral middle value (Closeout §3).
@@ -138,8 +138,8 @@ class PreparedEvidence:
 class ResearchContext:
     """The slice of the Research Plan the model is allowed to see.
 
-    Needed for Decision Relevance (PRD §20) and for the semantic cache
-    key (PRD §28). It carries no credentials and no raw evidence.
+    Needed for Decision Relevance and for the semantic cache
+    key. It carries no credentials and no raw evidence.
     """
 
     mode: str = "general"
@@ -186,7 +186,7 @@ class ValidatedCluster:
 
     `cluster_id` is derived from the SORTED evidence id set, never from the
     model's label — the same evidence set always yields the same id even if
-    a different model words the label differently (PRD §10).
+    a different model words the label differently.
     """
 
     cluster_id: str
@@ -209,7 +209,7 @@ class ValidatedCluster:
 
 @dataclass(frozen=True)
 class ContradictionAssessment:
-    """Support / counter classification for one cluster (PRD §16)."""
+    """Support / counter classification for one cluster."""
 
     cluster_id: str
     supporting_evidence_ids: tuple[str, ...] = ()
@@ -233,7 +233,7 @@ class ContradictionAssessment:
 
 @dataclass(frozen=True)
 class SignalFeatures:
-    """Everything code can count WITHOUT asking a model (PRD §12)."""
+    """Everything code can count WITHOUT asking a model."""
 
     cluster_id: str
     evidence_count: int = 0
@@ -279,7 +279,7 @@ class SignalFeatures:
 
 @dataclass(frozen=True)
 class WeakSignalAssessment:
-    """PRD §17 — weak-signal candidacy, never a synonym for low engagement."""
+    """weak-signal candidacy, never a synonym for low engagement."""
 
     is_weak_candidate: bool
     reasons: tuple[str, ...] = ()
@@ -301,7 +301,7 @@ class WeakSignalAssessment:
 
 @dataclass(frozen=True)
 class SignalDiagnostics:
-    """PRD §25 — full score explainability, kept OUT of the frozen schema."""
+    """full score explainability, kept OUT of the frozen schema."""
 
     signal_id: str
     cluster_id: str
@@ -334,7 +334,7 @@ class SignalDiagnostics:
 @dataclass(frozen=True)
 class IntelligencePipelineResult:
     """Phase 5 output. Explicitly carries NO insight / recommendation /
-    brief (PRD §38, §47)."""
+    brief."""
 
     signals: tuple[dict, ...] = ()
     clusters: tuple[ValidatedCluster, ...] = ()

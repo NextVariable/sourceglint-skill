@@ -1,4 +1,4 @@
-"""Phase 7 §17–§19, §60 — Application orchestrator.
+"""Application orchestrator.
 
 The orchestrator is the full-stack composition of the existing engine:
 

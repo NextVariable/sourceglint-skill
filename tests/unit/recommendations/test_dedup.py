@@ -175,3 +175,13 @@ class TestSemanticDedup:
         assert sorted(x.insight_id for x in result.kept) == sorted([rid_a, rid_b])
         assert result.removed == ()
         assert any("semantic dedup skipped" in w for w in result.warnings)
+
+
+def test_malformed_duplicate_group_preserves_candidates():
+    items = [_assessed("ins_rec_a"), _assessed("ins_rec_b")]
+    model = StubModel(payload={"duplicate_groups": [42, "ins_rec_a"]})
+
+    result = deduplicate_recommendations(items, model=model)
+
+    assert result.kept == tuple(items)
+    assert any("malformed duplicate group" in warning for warning in result.warnings)

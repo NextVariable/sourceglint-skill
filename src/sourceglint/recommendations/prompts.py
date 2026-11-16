@@ -1,4 +1,4 @@
-"""Phase 6B §31 — modular, versioned prompt registry for recommendation tasks.
+"""modular, versioned prompt registry for recommendation tasks.
 
 Mirrors the Phase 6A registry pattern: each prompt is a separate markdown
 file with a single responsibility. Version strings feed the semantic

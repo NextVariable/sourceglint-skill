@@ -1,9 +1,9 @@
-"""Modular, versioned prompt registry (PRD §9, §29).
+"""Modular, versioned prompt registry.
 
 Each prompt is a separate markdown file with a single responsibility:
 no giant monolithic prompt, and no prompt text living inside SKILL.md.
 
-Version strings are EXPLICIT and feed the semantic cache key (PRD §28),
+Version strings are EXPLICIT and feed the semantic cache key,
 so editing a prompt invalidates cached model output instead of silently
 reusing stale semantics.
 """

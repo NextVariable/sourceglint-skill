@@ -1,4 +1,4 @@
-"""Phase 6A §8, §31 — the insight pipeline orchestrator.
+"""the insight pipeline orchestrator.
 
 Signal Set
   → prepare_signals()           preparation.py     (code)
@@ -10,11 +10,11 @@ Signal Set
   → InsightPipelineResult
 
 Determinism: insight IDs are code-derived; output ordering is
-insight_id ascending, never model order. Failure semantics (PRD §31):
+insight_id ascending, never model order. Failure semantics:
 fact synthesis failure → pipeline fails; inference failure → facts
 still returned (partial); gtm failure → insights still returned.
 
-STOP BOUNDARY (PRD §48): output is FACT + INFERENCE only. No
+STOP BOUNDARY: output is FACT + INFERENCE only. No
 RECOMMENDATION, no action, no final brief.
 """
 from __future__ import annotations
@@ -50,7 +50,7 @@ def run_insight_pipeline(
     """Run the full Signal → FACT → INFERENCE → Insight pipeline (Phase 6A).
 
     Returns an InsightPipelineResult. Does NOT produce RECOMMENDATIONs
-    or final briefs (PRD §48 stop boundary).
+    or final briefs.
     """
     warnings: list[str] = []
 
@@ -90,11 +90,11 @@ def run_insight_pipeline(
     # 4. Derive GTM implications (for each validated fact + inference)
     fact_insights = [
         (f, fid, FACT)
-        for f, fid in zip(fact_result.validated, fact_result.insight_ids)
+        for f, fid in zip(fact_result.validated, fact_result.insight_ids, strict=True)
     ]
     inference_insights = [
         (inf, iid, INFERENCE)
-        for inf, iid in zip(inference_result.validated, inference_result.insight_ids)
+        for inf, iid in zip(inference_result.validated, inference_result.insight_ids, strict=True)
     ]
     all_insights = fact_insights + inference_insights
 
@@ -156,7 +156,7 @@ def run_insight_pipeline(
         inference_distance = 0
         if ins_type == INFERENCE:
             # Find the inference draft to get fact_ids + distance
-            for inf_draft, iid in zip(inference_result.validated, inference_result.insight_ids):
+            for inf_draft, iid in zip(inference_result.validated, inference_result.insight_ids, strict=True):
                 if iid == ins_dict["insight_id"]:
                     supporting_facts = inf_draft.fact_ids
                     inference_distance = inf_draft.inference_distance

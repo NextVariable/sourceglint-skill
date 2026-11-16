@@ -1,4 +1,4 @@
-"""Phase 7 §12–§14 — deterministic intent / market / language / window parsing.
+"""deterministic intent / market / language / window parsing.
 
 No LLM is used to recognise modes (§12). The chain is:
 

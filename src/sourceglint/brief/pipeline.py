@@ -148,7 +148,7 @@ def _usable_recommendations(
 def run_brief_pipeline(brief_input: BriefInput) -> RenderedBrief:
     """Compose the final Intelligence Brief from validated objects.
 
-    Pure code path — no model, no network, no clock (Gate K). The brief
+    Pure code path — no model, no network, no clock. The brief
     never reasons; it selects, orders, formats, resolves, and degrades.
     """
     warnings: list[str] = []

@@ -6,7 +6,7 @@ only code-owned layout constants.
 """
 from __future__ import annotations
 
-#: Per-section default output caps (Phase 6C §10). Content that exceeds a
+#: Per-section default output caps. Content that exceeds a
 #: cap is deterministically dropped (§34) — never "filled" to reach a
 #: number. Callers may override per-section via BriefInput.caps.
 DEFAULT_CAPS: dict[str, int] = {
@@ -21,7 +21,7 @@ DEFAULT_CAPS: dict[str, int] = {
 #: top NOW action; missing layers simply degrade, §26).
 EXECUTIVE_MAX_LINES: int = 3
 
-#: Priority bucket → display order (Phase 6C §9, §15). The underlying
+#: Priority bucket → display order. The underlying
 #: frozen values (now/next/watch) are never rewritten.
 PRIORITY_ORDER: tuple[str, str, str] = ("now", "next", "watch")
 
@@ -36,7 +36,7 @@ WATCHOUT_KIND_LABELS: dict[str, str] = {
 #: Overall-risk rank for deterministic tie-breaking (LOW first).
 RISK_RANK: dict[str, int] = {"LOW": 0, "MEDIUM": 1, "HIGH": 2}
 
-#: Fixed Markdown section headings (Phase 6C §25). Empty sections are
+#: Fixed Markdown section headings. Empty sections are
 #: dropped by the renderer; these strings are presentation only.
 SECTION_HEADINGS: dict[str, str] = {
     "executive": "Executive Summary",
@@ -49,14 +49,14 @@ SECTION_HEADINGS: dict[str, str] = {
     "sources": "Sources",
 }
 
-#: Fixed no-evidence statement (Phase 6C §20). The brief must NEVER
+#: Fixed no-evidence statement. The brief must NEVER
 #: fabricate "no major changes" — when 0 usable evidence exists this
 #: exact, honest statement is emitted instead.
 NO_EVIDENCE_STATEMENT = (
     "No usable evidence was retrieved for this research request."
 )
 
-#: Graceful-degradation notes (Phase 6C §19), appended under Coverage
+#: Graceful-degradation notes, appended under Coverage
 #: only when the corresponding layer is genuinely absent.
 NO_SIGNALS_NOTE = "No validated signals found."
 NO_INSIGHTS_NOTE = "No validated higher-order insights were generated."

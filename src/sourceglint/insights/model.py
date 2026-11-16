@@ -1,12 +1,12 @@
-"""Phase 6A §7 — reuse IntelligenceModel boundary.
+"""reuse IntelligenceModel boundary.
 
 The insights package reuses the Phase 5 IntelligenceModel protocol
-without modification (PRD §7). New task constants, response schemas,
+without modification. New task constants, response schemas,
 and a deterministic FakeInsightModel (backward-compatible extension
 of FakeIntelligenceModel) are added so unit tests can drive the insight
 pipeline offline.
 
-No commercial LLM provider is named, imported, or depended on (PRD §7,
+No commercial LLM provider is named, imported, or depended on.
 ADR-0001 D2). Host integrations implement IntelligenceModel outside
 this repository.
 """
@@ -21,13 +21,13 @@ from ..intelligence.model import (
     ModelStatus,
 )
 
-#: Task identifiers (PRD §29 — modular, single-responsibility prompts).
+#: Task identifiers (modular, single-responsibility prompts).
 TASK_FACT_SYNTHESIS = "fact_synthesis"
 TASK_INFERENCE_SYNTHESIS = "inference_synthesis"
 TASK_GTM_IMPLICATIONS = "gtm_implications"
 TASK_INSIGHT_DEDUP = "insight_dedup"
 
-#: Prompt versions — bump when the .md changes semantics (PRD §29).
+#: Prompt versions — bump when the Markdown prompt changes semantics.
 PROMPT_VERSIONS: dict[str, str] = {
     TASK_FACT_SYNTHESIS: "fact_synthesis:v1",
     TASK_INFERENCE_SYNTHESIS: "inference_synthesis:v1",
@@ -36,7 +36,7 @@ PROMPT_VERSIONS: dict[str, str] = {
 }
 
 
-# --- JSON schemas the model output must satisfy (PRD §26) -------------------
+# --- JSON schemas the model output must satisfy -------------------
 
 FACT_SYNTHESIS_RESPONSE_SCHEMA: Mapping[str, Any] = {
     "type": "object",
@@ -152,7 +152,7 @@ class FakeGTMImplicationScript:
     implications: Mapping[str, str | None]
 
 
-# --- deterministic fake insight model (PRD §40 step 2) ----------------------
+# --- deterministic fake insight model ----------------------
 
 
 @dataclass
@@ -165,7 +165,7 @@ class FakeInsightModel(FakeIntelligenceModel):
     inference_synthesis, gtm_implications) are handled here.
 
     Used by every unit test and the Phase 6A golden case — the default
-    suite is 100% offline (PRD §5, Gate K).
+    suite is 100% offline.
     """
 
     fact_scripts: Sequence[FakeFactScript] = ()

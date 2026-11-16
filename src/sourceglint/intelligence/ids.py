@@ -1,4 +1,4 @@
-"""Deterministic identity for clusters and signals (PRD §10).
+"""Deterministic identity for clusters and signals.
 
 Cluster identity is derived by CODE from the SORTED evidence-id set —
 never from a model label. Two runs that group the same evidence set get
@@ -38,7 +38,7 @@ def derive_cluster_id(evidence_ids: Iterable[str]) -> str:
 
     Sorting makes the id independent of model output order and of
     retrieval order. Empty input is a programming error — a cluster with
-    no evidence cannot exist (PRD §11).
+    no evidence cannot exist.
     """
     ids = sorted({str(eid) for eid in evidence_ids if str(eid)})
     if not ids:
@@ -47,7 +47,7 @@ def derive_cluster_id(evidence_ids: Iterable[str]) -> str:
 
 
 def derive_signal_id(cluster_id: str) -> str:
-    """`sig_<sha256(cluster_id)>` — 1:1 with the cluster (PRD §10)."""
+    """`sig_<sha256(cluster_id)>` — 1:1 with the cluster."""
     if not str(cluster_id):
         raise ValueError("cannot derive signal id from an empty cluster id")
     return f"{SIGNAL_ID_PREFIX}{_digest([str(cluster_id)])}"

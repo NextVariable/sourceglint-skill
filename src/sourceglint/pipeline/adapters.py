@@ -1,4 +1,4 @@
-"""Source Adapter interface and RawSourceResult DTO (Phase 3 §7, §8).
+"""Source Adapter interface and RawSourceResult DTO.
 
 The adapter layer is the boundary between source-specific retrieval logic
 and the source-AGNOSTIC downstream pipeline (normalization, dedup, ledger).

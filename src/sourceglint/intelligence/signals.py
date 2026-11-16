@@ -1,11 +1,11 @@
-"""Phase 5 §14–§15, §24–§26 — signal construction from a validated cluster.
+"""signal construction from a validated cluster.
 
 A signal is the per-cluster object that reaches the FROZEN
 `schemas/signal.schema.json` (additionalProperties: false). Code builds it
 from cluster + features + contradiction + factors; the model never mints
 signal fields.
 
-signal_type is a SINGLE enum (user-confirmed decision, PRD §3), decided
+signal_type is a SINGLE enum (user-confirmed decision), decided
 in this priority order:
 
   contradictory — the contradiction assessment found counter evidence

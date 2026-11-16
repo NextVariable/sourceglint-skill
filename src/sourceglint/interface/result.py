@@ -1,4 +1,4 @@
-"""Phase 7 §20–§21, §56 — SkillResult contract.
+"""SkillResult contract.
 
 Normalized external status taxonomy (never 15 internal states):
 

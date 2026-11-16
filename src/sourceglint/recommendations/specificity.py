@@ -1,4 +1,4 @@
-"""Phase 6B §33 — No Unsupported Specificity guard.
+"""No Unsupported Specificity guard.
 
 Prevents the model from inventing specifics the evidence / context do
 not support:

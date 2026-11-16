@@ -1,4 +1,4 @@
-"""PRD §36 — no recommendation leakage.
+"""Verify that insights exclude recommendations.
 
 Phase 5 stops at the Signal layer: it states what happened or may be
 forming. It never tells anyone what to do. Model output is screened for

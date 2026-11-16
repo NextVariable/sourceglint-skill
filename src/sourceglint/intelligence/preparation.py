@@ -1,6 +1,6 @@
-"""Phase 5 §6 — deterministic evidence preparation.
+"""deterministic evidence preparation.
 
-Everything here is CODE (PRD §4): stable ordering, duplicate suppression,
+Everything here is CODE: stable ordering, duplicate suppression,
 window defaulting, size bounding, and the minimal model payload. The model
 is never shown `raw_metadata`, never shown the full ledger, and never shown
 URLs.
@@ -76,7 +76,7 @@ def prepare_evidence(
 
     Ordering is by `evidence_id` ascending: cluster ids and signal ids are
     derived from these lists, so they must never depend on retrieval order,
-    insertion order, or timestamps (PRD §10).
+    insertion order, or timestamps.
 
     Returns `list[PreparedEvidence]`, or `(list, warnings)` when
     `with_warnings=True`.

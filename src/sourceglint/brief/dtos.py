@@ -1,7 +1,7 @@
-"""Phase 6C §6, §33 — internal Brief DTOs.
+"""internal Brief DTOs.
 
 INTERNAL to the brief layer. No DTO here is written to a frozen schema —
-the only artifact the layer produces is deterministic Markdown (PRD §22).
+the only artifact the layer produces is deterministic Markdown.
 The layer consumes ALREADY VALIDATED structured objects:
   * Research plan metadata (BriefContext)
   * validated Signals (signal.schema dicts)
@@ -9,7 +9,7 @@ The layer consumes ALREADY VALIDATED structured objects:
   * validated RECOMMENDATIONs (insight.schema dicts, type=RECOMMENDATION)
   * their diagnostics (6A InsightDiagnostics / 6B RecommendationDiagnostics)
   * the Evidence Ledger and CoverageReport
-and never raw adapter results (Phase 6C §6).
+and never raw adapter results.
 """
 from __future__ import annotations
 
@@ -128,8 +128,7 @@ class SelectedInference:
 class SelectedRecommendation:
     """One selected RECOMMENDATION with its code-resolved support chain.
 
-    why_lines are the verbatim statements of the supporting insights
-    (Phase 6C §11, §29) — the renderer never invents its own reason.
+    why_lines are the verbatim statements of the supporting insights — the renderer never invents its own reason.
     evidence_ids is the resolved Recommendation → Insight → Signal →
     Evidence chain (§16). priority is the frozen bucket (now/next/watch).
     """

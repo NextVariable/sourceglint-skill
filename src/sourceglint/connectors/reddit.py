@@ -1,4 +1,4 @@
-"""Reddit real source adapter (Phase 4 §9).
+"""Reddit real source adapter.
 
 LEGAL / POLICY posture
 ---------------------
@@ -6,21 +6,21 @@ Reddit's official API requires OAuth2 authentication since 2023. This
 adapter uses the official `client_credentials` grant, against the LEGITIMATE
 endpoint `https://www.reddit.com/api/v1/access_token`. We do NOT scrape
 HTML, do NOT extract cookies, do NOT reverse-engineer private endpoints,
-and do NOT store user credentials. PRD §9 priority #1 is "Official
+and do NOT store user credentials. The preferred backend is "Official
 Reddit API / OAuth" — that is exactly what this module implements.
 
-Phase 4 §9 also accepts the OUTCOME where a Reddit connector cannot be
+An expected outcome is that a Reddit connector cannot be
 implemented safely. We chose to implement the legal path. If a future
 harness policy change breaks this, the adapter is expected to raise
 `AdapterAuthMissing` until credentials are configured again — there is NO
 fallback to cookie scraping or private endpoints.
 
-PRD §9 rules in scope:
+Reddit adapter rules:
   * NO cookie / session theft — explicit.
   * NO login automation, CAPTCHA bypass, proxy circumvention — explicit.
   * `client_id` / `client_secret` are injected via constructor; the module
     itself never reads environment variables (matches the host-agnostic
-    boundary from PRD §5).
+    boundary).
   * Score is recorded as engagement metadata, never as evidence_quality.
 
 Failure-mode mapping (Phase 3 AdapterError taxonomy):
@@ -73,7 +73,7 @@ REDDIT_SEARCH_URL = "https://oauth.reddit.com/search"
 REDDIT_RSS_SEARCH_URL = "https://www.reddit.com/search.rss"
 
 
-# PRD §16 default for Reddit search.
+# Default result cap for Reddit search.
 DEFAULT_MAX_PER_QUERY = 20
 
 
@@ -119,7 +119,7 @@ class RedditAdapter:
       http_client  — injected; defaults to StdlibHttpClient.
       client_id    — Reddit app client_id (constructor injection).
       client_secret — Reddit app client_secret (constructor injection).
-      max_per_query — clamp value (PRD §16).
+      max_per_query — clamp value.
       source_name  — registry name; defaults to "reddit".
       token_ttl_default — used when access_token has no `expires_in`.
 
@@ -311,7 +311,7 @@ class RedditAdapter:
                     reason="reddit child missing required field (name/title/permalink)",
                 )
 
-            # PRD §9: deleted content dropped silently.
+            # deleted content dropped silently.
             if title == "[deleted]" or author == "[deleted]" or author == "[removed]":
                 continue
 

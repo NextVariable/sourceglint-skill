@@ -1,4 +1,4 @@
-"""Deterministic Retrieval Planning (Phase 3 §6).
+"""Deterministic Retrieval Planning.
 
 Inputs:
   * Phase 1 Research Plan (mapping)

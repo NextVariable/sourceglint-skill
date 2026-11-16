@@ -1,11 +1,11 @@
 """Phase 6A — Insight Synthesis Layer (Signal → FACT → INFERENCE → Insight).
 
-STOP BOUNDARY (PRD §47, §48): this package produces validated, traceable
+STOP BOUNDARY: this package produces validated, traceable
 Insights (FACT + INFERENCE only). It does NOT produce RECOMMENDATIONs,
 GTM action strategies, final briefs, or Skill Interface packaging. Those
 belong to Phase 6B+.
 
-Pipeline (PRD §8):
+Pipeline:
 
     Signal Set
       → prepare_signals()           preparation.py   (code)
@@ -18,7 +18,7 @@ Pipeline (PRD §8):
       → validate_insight_schema()   validation.py    (code gate)
       → InsightPipelineResult
 
-LLM/CODE boundary (PRD §6): code owns signal selection, ordering, input
+LLM/CODE boundary: code owns signal selection, ordering, input
 preparation, Insight IDs, schema validation, referential integrity, FACT
 grounding validation, INFERENCE support validation, confidence range
 validation, recommendation leakage detection, duplicate detection,

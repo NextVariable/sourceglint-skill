@@ -1,4 +1,4 @@
-"""Append-oriented JSONL Evidence Ledger (Phase 2 §5).
+"""Append-oriented JSONL Evidence Ledger.
 
 Design notes:
   * Storage is JSONL: one evidence JSON object per line. Append-only on disk.

@@ -1,4 +1,4 @@
-"""Deduplication (Phase 3 §15/§16).
+"""Deduplication.
 
 Phase 2 already provides deterministic Evidence ID dedup at the ledger
 level. This module adds two more layers BEFORE the ledger:

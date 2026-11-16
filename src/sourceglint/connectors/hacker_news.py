@@ -7,9 +7,10 @@ The HTTP client owns bounded retries and timeout handling; no auth is required.
 """
 from __future__ import annotations
 
-from html.parser import HTMLParser
+import re
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
+from html.parser import HTMLParser
 from typing import Any, Mapping
 
 from ..pipeline.adapters import (
@@ -48,7 +49,7 @@ HN_SEARCH_URL = "https://hn.algolia.com/api/v1/search"
 HN_ITEM_BASE = "https://news.ycombinator.com/item?id="
 
 
-# PRD §16 default for HN.
+# Default result cap for Hacker News.
 DEFAULT_MAX_PER_QUERY = 20
 
 
@@ -107,7 +108,7 @@ class HackerNewsAdapter:
         language = str(request.get("query_language") or "")
         market = str(request.get("market") or "")
 
-        # Resolve limit (PRD §16).
+        # Resolve limit.
         limit_req = request.get("limit")
         try:
             limit_n = (
@@ -287,7 +288,6 @@ class HackerNewsAdapter:
 
 
 def _hiring_thread(title: str) -> bool:
-    import re
     return bool(re.match(
         r"^ask hn:\s*(?:who(?: is|’s|'s)? hiring|who wants to be hired|freelancer\?\s*seeking freelancer\?)(?:\s*\(|\s*\?|\s*$)",
         title.casefold(),
@@ -295,7 +295,6 @@ def _hiring_thread(title: str) -> bool:
 
 
 def _hiring_intent(query: str) -> bool:
-    import re
     return bool(re.search(r"\b(?:jobs?|hiring|hired|recruit\w*|careers?|freelanc\w*)\b|招聘|求职", query.casefold()))
 
 

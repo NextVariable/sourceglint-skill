@@ -1,24 +1,24 @@
-"""Phase 5 §7–§11, §33–§34 — semantic clustering and validation.
+"""semantic clustering and validation.
 
-What the model owns (PRD §4): grouping evidence by semantic equivalence,
+What the model owns: grouping evidence by semantic equivalence,
 choosing a `label` and a `claim`, per-cluster `confidence`.
 
 What CODE owns here:
   * the payload sent to the model (minimal fields, research context only);
-  * hallucinated-id rejection   (PRD §11)  — ids not in the input are cut;
+  * hallucinated-id rejection  — ids not in the input are cut;
   * empty-cluster rejection                — a cluster with no valid id is cut;
-  * single-membership enforcement (PRD §33, §34) — each evidence id may
+  * single-membership enforcement — each evidence id may
     belong to ONE cluster (first occurrence wins; later duplicates are cut,
     which can empty and thereby drop a secondary cluster);
-  * cluster_id derivation (PRD §10) — `cl_<sha256(sorted evidence ids)>`,
+  * cluster_id derivation — `cl_<sha256(sorted evidence ids)>`,
     never derived from a model label;
   * deterministic output order — clusters sorted by cluster_id.
 
 The model is never allowed to invent evidence, mint ids, or force every
-item into a cluster (precision over recall, PRD §8): unassigned evidence
+item into a cluster (precision over recall): unassigned evidence
 is legal and silent.
 
-Failure semantics (PRD §27): clustering is a REQUIRED step. If the model
+Failure semantics: clustering is a REQUIRED step. If the model
 reports anything but SUCCESS, or every emitted cluster is invalid, the
 pipeline cannot proceed and `IntelligencePipelineError` is raised. Partial
 loss (one bad cluster among several good ones) degrades instead: the bad
@@ -183,7 +183,7 @@ def cluster(
     defensively so the payload handed to the model (and the derived ids)
     never depend on caller order. With `cache`, an identical prior run
     (same prompt version / model / evidence set / context) skips the
-    model call (PRD §28).
+    model call.
     """
     items = sorted(prepared, key=lambda e: e.evidence_id)
     if not items:

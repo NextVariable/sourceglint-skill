@@ -1,4 +1,4 @@
-"""Phase 6B §46 — centralized policy constants for the Recommendation layer.
+"""centralized policy constants for the Recommendation layer.
 
 Every weight, threshold, intensity cap and pattern list lives here so
 the layer has no scattered magic numbers. Changing any of these is a

@@ -1,6 +1,6 @@
-"""Phase 5 §12–§13, §18 — code-computed cluster features.
+"""code-computed cluster features.
 
-Everything in this module is pure counting — NO model call (PRD §4, §12):
+Everything in this module is pure counting — NO model call:
 
   * source independence is conservatively approximated by distinct domains,
     collapsing substantial identical or near-copied bodies across origins.
@@ -9,7 +9,7 @@ Everything in this module is pure counting — NO model call (PRD §4, §12):
     origin is the url host with scheme/path/www dropped; when a record has
     no url at all we fall back to its `source` name (marked with the
     `origin_fallback` kind so downstream knows the count is weaker).
-  * windows (PRD §18): a cluster may contain `current` and `baseline`
+  * windows: a cluster may contain `current` and `baseline`
     evidence. `appeared_only_current` is ONLY inferred when the ledger
     actually contains baseline evidence somewhere — with no baseline
     anywhere, "only current" would be a false positive (nothing to compare
@@ -18,7 +18,7 @@ Everything in this module is pure counting — NO model call (PRD §4, §12):
     T3 marketplace / T4 secondary (evidence.schema.json). `first_party_count`
     counts T1, `community_count` counts T2. Missing tier counts nowhere.
 
-Engagement (PRD §23): raw counter sum only — engagement is NOT treated as
+Engagement: raw counter sum only — engagement is NOT treated as
 a market signal here; that decision belongs to signal classification.
 """
 from __future__ import annotations
@@ -178,7 +178,7 @@ def count_reporting_origins(members: Sequence[PreparedEvidence]) -> int:
         return key
     fingerprints = {}
     substantial = []
-    for member, (origin, _) in zip(members, origins):
+    for member, (origin, _) in zip(members, origins, strict=True):
         text = re.sub(r"\s+", " ", member.content or member.snippet).strip().casefold()
         if len(text) < (20 if member.content else 80):
             continue

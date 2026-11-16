@@ -1,4 +1,4 @@
-"""Phase 5 §28 — semantic cache for model calls.
+"""semantic cache for model calls.
 
 Cache keys include task, prompt version, model, evidence IDs and research
 context. Callers can also fingerprint the exact model input: canonical IDs
@@ -14,7 +14,7 @@ import json
 from dataclasses import dataclass
 from typing import Any, Iterable, Mapping
 
-from .model import ModelResponse, ModelStatus
+from .model import ModelResponse
 
 
 def _canonical(obj: Any) -> str:
@@ -44,7 +44,7 @@ def build_cache_key(
     research_context: Mapping[str, Any],
     input_payload: Any = None,
 ) -> str:
-    """Deterministic cache key (PRD §28). Evidence id order does not matter."""
+    """Deterministic cache key. Evidence id order does not matter."""
     sorted_ids = sorted({str(eid) for eid in evidence_ids})
     parts = [
         f"task={task}",
@@ -80,7 +80,7 @@ class SemanticCache:
     def put(self, key: str, response: ModelResponse) -> ModelResponse:
         """Store a SUCCESS response. Non-success responses are ignored and
         returned as-is, so the caller can keep one code path."""
-        if response.status is ModelStatus.SUCCESS and response.payload is not None:
+        if response.ok:
             self._store[key] = response
         return response
 

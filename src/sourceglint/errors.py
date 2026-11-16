@@ -1,4 +1,4 @@
-"""Error taxonomy (Phase 2 §13).
+"""Error taxonomy.
 
 Small, deliberate. Distinct exception classes only when the failure mode is
 distinct enough that callers can usefully branch on it.

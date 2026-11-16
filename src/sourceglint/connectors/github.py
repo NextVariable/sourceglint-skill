@@ -36,7 +36,7 @@ SOURCE_TYPE = "page"
 GITHUB_SEARCH_URL = "https://api.github.com/search/repositories"
 
 
-# PRD §16 default for GitHub search.
+# Default result cap for GitHub search.
 DEFAULT_MAX_PER_QUERY = 20
 
 
@@ -54,7 +54,7 @@ class GitHubAdapter:
     http_client: HttpClient | None = None
     max_per_query: int = DEFAULT_MAX_PER_QUERY
     source_name: str = SOURCE_NAME
-    # Token in constructor only — never read environment here (PRD §5 boundary).
+    # Token in constructor only — never read environment here.
     token: str | None = None
     include_discussions: bool = False
     limitations: list[str] = field(default_factory=list, compare=False)
@@ -82,7 +82,7 @@ class GitHubAdapter:
         language = str(request.get("query_language") or "")
         market = str(request.get("market") or "")
 
-        # Limit clamp per PRD §16.
+        # Limit clamp.
         limit_req = request.get("limit")
         try:
             limit_n = int(limit_req) if limit_req is not None else self.max_per_query
@@ -90,7 +90,7 @@ class GitHubAdapter:
             limit_n = self.max_per_query
         per_page = max(1, min(limit_n, self.max_per_query))
 
-        # Compose the URL. PRD §8: simple search-by-query, sort by
+        # Search by query and sort by
         # updated_at (most recently active first is the natural MVP
         # read for competitor monitoring).
         from urllib.parse import quote_plus

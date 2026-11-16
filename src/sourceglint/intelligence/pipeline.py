@@ -1,4 +1,4 @@
-"""Phase 5 §38 — the intelligence pipeline orchestrator.
+"""the intelligence pipeline orchestrator.
 
 Evidence Ledger
   → prepare_evidence()        preparation.py   (code)
@@ -15,14 +15,14 @@ output ordering is score-desc / signal_id-asc, never model order. The one
 time input is `as_of` — REQUIRED so recency (and therefore score) is
 reproducible for the same instant.
 
-Failure semantics (PRD §27): clustering is required and raises
+Failure semantics: clustering is required and raises
 IntelligencePipelineError when unusable; every later step degrades with a
 stage-prefixed warning instead of raising. A cluster whose evidence only
 exists in the baseline window is not a CURRENT signal: it is dropped by
 default (`drop_baseline_only=True`) with a warning.
 
 The result carries signals as frozen-schema dicts only — no insight,
-recommendation, or brief (PRD §47 stop boundary).
+recommendation, or brief.
 """
 from __future__ import annotations
 

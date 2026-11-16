@@ -9,7 +9,7 @@ Pipeline (end of the evidence chain):
     → Recommendations
     → Final Intelligence Brief
 
-Core principle: the renderer does not think (Phase 6C PRD §2). Every
+Core principle: the renderer does not think. Every
 section of the brief is composed by code from ALREADY VALIDATED
 structured objects — validated signals, FACT/INFERENCE insights,
 RECOMMENDATION dicts, and their diagnostics. The brief layer:
@@ -26,10 +26,9 @@ RECOMMENDATION dicts, and their diagnostics. The brief layer:
 
 The brief layer does NOT: invent insights, infer new causality, create
 recommendations, reinterpret evidence, change confidence or priority,
-override contradictions, summarize raw web pages, or call any model
-(Phase 6C §2, §23, Gate K).
+override contradictions, summarize raw web pages, or call any model.
 
-STOP BOUNDARY (§48): output is the final Markdown brief only. No Skill
+Output boundary: output is the final Markdown brief only. No Skill
 Interface, no SKILL.md packaging, no host adapters, no WorkBuddy /
 Claude Code / Codex integration, no dashboard, no external writes.
 """

@@ -1,6 +1,6 @@
-"""Official-domain classification (Phase 4 §6).
+"""Official-domain classification.
 
-The classifier is a deterministic, configuration-driven matcher. PRD §6
+The classifier is a deterministic, configuration-driven matcher. It
 forbids letting the model decide "looks like an official site" — instead,
 this matcher takes explicit config and applies strict label-aligned
 matching so spoof attempts are reliably rejected.
@@ -14,7 +14,7 @@ Integration model:
     touching the frozen Evidence Contract (both fields are optional, and
     tier upgrades map cleanly to T1=1.0 in the existing tier table).
 
-Spoof scenarios enumerated by PRD §6:
+Spoof scenarios handled by this matcher:
   * exact domain
   * subdomain (`docs.company.com` for owner `company`)
   * `company.com.evil.org`  → NOT official (label-aligned required)

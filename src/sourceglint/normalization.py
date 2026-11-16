@@ -1,4 +1,4 @@
-"""RawSourceResult -> Evidence normalization (Phase 3 §12).
+"""RawSourceResult -> Evidence normalization.
 
 Strictly consumes Phase 1 evidence.schema.json (additionalProperties:false).
 Optional fields are ABSENT (not 'unknown'/'N/A'/'null') when raw lacks them.
@@ -85,7 +85,7 @@ def _validate_engagement(eng: Mapping[str, object]) -> dict:
     out: dict[str, int] = {}
     for k, v in eng.items():
         if k not in _EVIDENCE_VALID_ENGAGEMENT_KEYS:
-            # Drop silently per Phase 3 §12 (we don't pollute the ledger).
+            # Drop invalid rows before writing to the ledger.
             continue
         if not isinstance(v, int) or isinstance(v, bool):
             raise EvidenceNormalizationError(
@@ -102,9 +102,7 @@ def _validate_engagement(eng: Mapping[str, object]) -> dict:
 def _known_tier(source: str) -> int | None:
     """Return the deterministic tier for known sources, or None for unknown.
 
-    Unknown sources must NEVER receive a synthetic neutral score (PRD
-    Closeout §3). The Phase 1 evidence schema declares source_tier and
-    evidence_quality as OPTIONAL — unknown sources omit both fields.
+    Unknown sources omit both optional fields, source_tier and evidence_quality.
     """
     return _TIER_MAP.get(source)
 
@@ -168,7 +166,7 @@ def normalize_raw(
         tier = 2
     quality = _known_quality(tier) if tier is not None else None
 
-    # Phase 4 §6 + §20: when raw_metadata declares an official-domain match,
+    # when raw_metadata declares an official-domain match,
     # the verified-owner flag wins over the source-tier heuristic. The
     # official flag is itself the verification, so we promote to T1 even
     # for sources not in our tier map. This is a tier-resolution tweak; no

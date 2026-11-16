@@ -1,4 +1,4 @@
-"""Phase 7 §15–§16, §22 — canonical public entry point.
+"""canonical public entry point.
 
 ``run_sourceglint(...)`` is THE single public API. Hosts, the CLI
 and the Skill runtime all call exactly this function (Gate F). It:

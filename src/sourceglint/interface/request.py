@@ -1,4 +1,4 @@
-"""Phase 7 §9–§10, §56 — host-neutral request contract.
+"""host-neutral request contract.
 
 ``SkillRequest`` is the thin input a host sends. ``query`` is the only
 required field; everything else is parsed from the query or falls back

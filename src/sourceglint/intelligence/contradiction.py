@@ -1,4 +1,4 @@
-"""Phase 5 §16 — support-vs-contradiction classification per cluster.
+"""support-vs-contradiction classification per cluster.
 
 What the model owns: which evidence within ONE cluster supports the
 cluster claim and which contradicts it, plus the contradiction `kind`
@@ -18,7 +18,7 @@ What CODE owns here:
     exist) but flagged degraded so downstream cannot silently
     under-report. An unknown kind value collapses to `none` — code never
     invents a kind the model did not name;
-  * failure semantics (PRD §27) — contradiction is NOT a required step.
+  * failure semantics — contradiction is NOT a required step.
     A model failure leaves support and contradiction unassessed
     for that cluster, with a warning; it never raises.
 """
@@ -100,7 +100,7 @@ def analyze_contradictions(
     """Classify support vs counter for every cluster, one model call each.
 
     When `cache` is provided, a hit (same task/prompt version/model/
-    evidence set/context) skips the model call entirely (PRD §28).
+    evidence set/context) skips the model call entirely.
     """
     if not clusters:
         return ContradictionOutcome()

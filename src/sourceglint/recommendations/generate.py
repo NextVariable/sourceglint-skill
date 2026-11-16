@@ -1,4 +1,4 @@
-"""Phase 6B §10–§11, §18–§19, §32 — candidate generation + code validation.
+"""candidate generation + code validation.
 
 The model proposes candidate actions. Code validates every draft:
   * support refs valid (insight ids exist and are FACT/INFERENCE)

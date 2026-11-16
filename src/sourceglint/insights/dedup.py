@@ -1,4 +1,4 @@
-"""Phase 6A §22 — insight deduplication.
+"""insight deduplication.
 
 Detects semantic duplicates via:
 1. structural overlap (same insight_id → same type + sorted signals + sorted evidence)
@@ -58,7 +58,7 @@ def deduplicate_insights(
     *,
     signal_overlap_threshold: float = SIGNAL_OVERLAP_THRESHOLD,
 ) -> DedupResult:
-    """Remove structural and signal-overlap duplicates (PRD §22).
+    """Remove structural and signal-overlap duplicates.
 
     Two-pass dedup:
       1. Structural: same insight_id → exact duplicate, first kept.

@@ -1,4 +1,4 @@
-"""Phase 6A §12–§13, §37 — code-side FACT grounding validation.
+"""code-side FACT grounding validation.
 
 The model owns statement wording; code rejects statements that assert
 more than the evidence owned by the cited signals can support. All four
@@ -16,15 +16,15 @@ Guards:
     evidence sets. "several users complained" + "80% of users
     complained" → reject.
   * Unsupported causality (§12) — a causal connective ("caused",
-    "because of", ...) must also appear in the signal pool's evidence
+    "because of",...) must also appear in the signal pool's evidence
     text, otherwise the model is asserting a causal link the sources
     did not make.
   * Unsupported universality (§13) — a blanket generalization ("users
-    generally", "the market shows", ...) must be grounded in the
+    generally", "the market shows",...) must be grounded in the
     evidence text; small samples must keep calibrated wording
     ("Several sampled community posts..." not "Users generally...").
   * Unsupported future (§12) — a predictive assertion ("will
-    dominate", "is expected to", ...) must be grounded in the evidence.
+    dominate", "is expected to",...) must be grounded in the evidence.
 
 VOC exception (§28): statements that REPORT user speech (begin with a
 reporting prefix such as "users say" / "one source reports") describe

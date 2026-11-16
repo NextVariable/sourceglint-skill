@@ -1,4 +1,4 @@
-"""Phase 6A §11–§14, §32, §34 — FACT synthesis + grounding validation.
+"""FACT synthesis + grounding validation.
 
 FACT synthesis: model compresses one or more Signals into grounded
 FACT statements. Code validates:
@@ -112,7 +112,7 @@ def validate_fact(
     signal_evidence_map: Mapping[str, set[str]],
     code_counts: Mapping[str, tuple[int, int]] | None = None,
 ) -> list[str]:
-    """Code-side FACT guardrails (PRD §14, §32, §34).
+    """Code-side FACT guardrails.
 
     Returns a list of violation strings (empty = valid). Each violation
     is a human-readable description of what failed. Hallucinated refs
@@ -217,7 +217,7 @@ def synthesize_facts(
     research_context: ResearchContext | None = None,
     cache: SemanticCache | None = None,
 ) -> FactSynthesisResult:
-    """Signal → FACT synthesis (PRD §11).
+    """Signal → FACT synthesis.
 
     Calls the model with fact_synthesis task. Parses response into
     FactDraft objects. Validates each draft against referential integrity,

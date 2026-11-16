@@ -1,4 +1,4 @@
-"""Local retrieval cache (Phase 3 §17).
+"""Local retrieval cache.
 
 JSON-file cache keyed by (source, query, query_language, market, time_window).
 * Deterministic key (sha256-derived, no raw values embedded).

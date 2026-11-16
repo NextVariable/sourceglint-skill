@@ -1,4 +1,4 @@
-"""Phase 6A §4 — insight schema validation (code-side guardrails).
+"""insight schema validation (code-side guardrails).
 
 Mirrors the frozen `insight.schema.json` invariants so drift fails
 loudly instead of silently. Full JSON Schema validation happens at the
@@ -92,7 +92,7 @@ def validate_insight_schema(insight: Mapping[str, Any]) -> list[str]:
     return violations
 
 
-# --- frozen-schema gate (PRD §4 Gate B) ------------------------------------
+# --- frozen-schema gate ------------------------------------
 
 
 def _insight_schema() -> dict:
@@ -115,7 +115,7 @@ def _insight_validator():
 
 
 def validate_insight_against_frozen_schema(insight: Mapping[str, Any]) -> list[str]:
-    """Validate against the REAL schemas/insight.schema.json (Gate B).
+    """Validate against schemas/insight.schema.json.
 
     `validate_insight_schema()` is a fast dependency-free mirror used inside
     the hot loop; this function is the authoritative gate. It is used by the
