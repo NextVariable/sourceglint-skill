@@ -51,6 +51,11 @@ class ModelResponse:
     payload: Mapping[str, Any] | None = None
     error: str = ""
 
+    def rows(self, key: str) -> list[Any] | None:
+        """Read a structured array even when a custom host skipped validation."""
+        value = self.payload.get(key) if isinstance(self.payload, Mapping) else None
+        return value if isinstance(value, list) else None
+
     @property
     def ok(self) -> bool:
         return self.status is ModelStatus.SUCCESS and self.payload is not None

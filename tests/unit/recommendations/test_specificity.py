@@ -117,3 +117,8 @@ class TestTargetEntity:
             "Target Acme Japan with the $15 plan.",
             target="Acme Japan $15",
         ) == []
+
+
+def test_cto_only_matches_a_complete_word_on_both_sides():
+    assert _check("Survey directors working in this sector.") == []
+    assert any("unsupported persona" in v for v in _check("Interview the CTO.", target="Sector Director"))

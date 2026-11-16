@@ -152,7 +152,7 @@ def validate_fact(
             )
 
     # 5. Confidence range 0-1
-    if draft.confidence < 0.0 or draft.confidence > 1.0:
+    if not 0.0 <= draft.confidence <= 1.0:
         violations.append(f"confidence out of range: {draft.confidence}")
 
     # 6. Recommendation leakage (§28, §32)
@@ -299,13 +299,20 @@ def _parse_fact_response(
             model_status=response.status.value,
         )
 
-    facts_raw = response.payload.get("facts") or []
+    facts_raw = response.rows("facts")
+    if facts_raw is None:
+        return FactSynthesisResult(warnings=("fact_synthesis: invalid facts array",), model_status="invalid_output")
     validated: list[FactDraft] = []
     rejected: list[FactDraft] = []
     insight_ids: list[str] = []
     warnings: list[str] = []
 
+    malformed = 0
     for i, fact_raw in enumerate(facts_raw):
+        if not isinstance(fact_raw, Mapping):
+            malformed += 1
+            warnings.append(f"fact_synthesis: draft {i} must be an object")
+            continue
         try:
             draft = FactDraft(
                 statement=str(fact_raw.get("statement") or ""),
@@ -314,7 +321,8 @@ def _parse_fact_response(
                 confidence=float(fact_raw.get("confidence") or 0.0),
                 rationale=str(fact_raw.get("rationale") or ""),
             )
-        except (TypeError, ValueError) as exc:
+        except (TypeError, ValueError, OverflowError) as exc:
+            malformed += 1
             warnings.append(f"fact_synthesis: draft {i} parse error: {exc}")
             continue
 
@@ -342,9 +350,9 @@ def _parse_fact_response(
             insight_ids.append(ins_id)
 
     status = "success"
-    if rejected and not validated:
+    if (rejected or malformed) and not validated:
         status = "invalid_output"
-    elif rejected:
+    elif rejected or malformed:
         status = "partial"
 
     return FactSynthesisResult(

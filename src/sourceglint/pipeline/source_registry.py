@@ -16,6 +16,7 @@ The schema enforces:
 """
 from __future__ import annotations
 
+import json
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -70,17 +71,11 @@ def _load_validators() -> Draft202012Validator:
         "common.schema.json",
         "source_registry.schema.json",
     ]
-    resources: list[tuple[str, Resource]] = []
-    for name in registry_files:
-        path = schema_dir / name
-        text = path.read_text(encoding="utf-8")
-        schema = yaml is not None and None  # noqa  (placeholder for typing)
-        import json as _json
-        resources.append((name, Resource.from_contents(_json.loads(text))))
-    registry = Registry().with_resources(resources)
-    import json as _json
-    sr = _json.loads((schema_dir / "source_registry.schema.json").read_text(encoding="utf-8"))
-    return Draft202012Validator(sr, registry=registry)
+    schemas = {name: json.loads((schema_dir / name).read_text(encoding="utf-8")) for name in registry_files}
+    registry = Registry().with_resources(
+        (name, Resource.from_contents(schema)) for name, schema in schemas.items()
+    )
+    return Draft202012Validator(schemas["source_registry.schema.json"], registry=registry)
 
 
 def _coerce_entry(raw: dict) -> SourceEntry:

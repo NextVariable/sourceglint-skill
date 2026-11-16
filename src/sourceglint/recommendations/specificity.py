@@ -116,7 +116,7 @@ def _grounded_in(token: str, pool_lower: str) -> bool:
     if core:
         candidates.add(core)
     for cand in candidates:
-        if cand and cand in pool_lower:
+        if cand and _has_phrase(cand, pool_lower):
             return True
     return False
 
@@ -139,9 +139,24 @@ def _geo_hits(text: str) -> list[tuple[str, str]]:
     return hits
 
 
+def _has_phrase(phrase: str, text: str) -> bool:
+    return bool(re.search(rf"(?<!\w){re.escape(phrase)}(?!\w)", text))
+
+
+def _has_persona(term: str, text: str) -> bool:
+    if _has_phrase(term, text):
+        return True
+    # Allow regular plurals, including acronyms such as CTOs, but never
+    # count a fragment inside another word such as director or sector.
+    if term.endswith("s"):
+        return False
+    suffix = "es" if term.endswith(("ch", "sh", "x", "z")) else "s"
+    return _has_phrase(term + suffix, text)
+
+
 def _persona_hits(text: str) -> list[str]:
     lower = text.lower()
-    return [term for term in _PERSONA_TERMS if term in lower]
+    return [term for term in _PERSONA_TERMS if _has_persona(term, lower)]
 
 
 def check_specificity(
@@ -170,7 +185,7 @@ def check_specificity(
     # 1. Money / budget / price (§33)
     for token in _money_tokens(text):
         core = _strip_number(token)
-        if core and core in target_lower:
+        if core and _has_phrase(core, target_lower):
             continue  # target entity itself may carry an amount
         if not _grounded_in(token, pool_lower):
             violations.append(
@@ -190,7 +205,7 @@ def check_specificity(
         for word, code in _geo_hits(text):
             if code == market:
                 continue  # same market — allowed
-            if word in target_lower:
+            if _has_phrase(word, target_lower):
                 continue  # target entity itself is named by the word
             if not _grounded_in(word, pool_lower):
                 violations.append(
@@ -200,9 +215,9 @@ def check_specificity(
 
     # 4. Persona / ICP (§33)
     for term in _persona_hits(text):
-        if term in target_lower:
+        if _has_persona(term, target_lower):
             continue
-        if not _grounded_in(term, pool_lower):
+        if not _has_persona(term, pool_lower):
             violations.append(
                 f"unsupported persona: '{term}' not grounded in cited evidence"
             )

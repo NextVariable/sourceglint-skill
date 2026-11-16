@@ -126,6 +126,4 @@ def prepare_signals(
             weak_signal=signal_id in weak_ids,
         ))
 
-    if not with_warnings:
-        return prepared, warnings
-    return prepared, warnings
+    return prepared, warnings if with_warnings else []

@@ -197,3 +197,8 @@ def test_event_date_in_source_text_is_not_forced_to_publication_date():
         evidence_by_id={'ev': {'snippet': 'Released on September 9, 2026.',
                                'published_at': '2026-09-23T12:00:00Z'}},
     ) == []
+
+
+def test_fragments_of_other_words_do_not_assert_causation():
+    assert _check("The session was scheduled to start.") == []
+    assert _check("The learner enrolled to study.") == []

@@ -173,7 +173,7 @@ def _validate_one(
     # 6. confidence range
     try:
         conf_val = float(confidence)
-        if conf_val < 0.0 or conf_val > 1.0:
+        if not 0.0 <= conf_val <= 1.0:
             violations.append(f"confidence out of range: {conf_val}")
     except (TypeError, ValueError):
         violations.append(f"confidence not a number: {confidence!r}")
@@ -300,12 +300,19 @@ def _parse_response(
             model_status=response.status.value,
         )
 
-    raws = response.payload.get("recommendations") or []
+    raws = response.rows("recommendations")
+    if raws is None:
+        return CandidateGenerationResult(warnings=("recommendation_generation: invalid recommendations array",), model_status="invalid_output")
     validated: list[RecommendationDraft] = []
     rejected: list[RecommendationDraft] = []
     warnings: list[str] = []
 
+    malformed = 0
     for i, raw in enumerate(raws):
+        if not isinstance(raw, Mapping):
+            malformed += 1
+            warnings.append(f"recommendation_generation: draft {i} must be an object")
+            continue
         try:
             draft, violations = _validate_one(
                 raw,
@@ -315,13 +322,17 @@ def _parse_response(
                 research_market=research_market,
                 target_entity=target_entity,
             )
-        except (TypeError, ValueError) as exc:
+        except (TypeError, ValueError, OverflowError) as exc:
+            malformed += 1
             warnings.append(
                 f"recommendation_generation: draft {i} parse error: {exc}"
             )
             continue
         if draft is None:
-            rejected.append(_as_draft(raw))
+            try:
+                rejected.append(_as_draft(raw))
+            except (TypeError, ValueError, OverflowError):
+                malformed += 1
             warnings.append(
                 f"recommendation_generation: rejected draft "
                 f"(action={str(raw.get('action'))[:60]}...): {'; '.join(violations)}"
@@ -349,9 +360,9 @@ def _parse_response(
         )
 
     status = "success"
-    if rejected and not validated:
+    if (rejected or malformed) and not validated:
         status = "invalid_output"
-    elif rejected:
+    elif rejected or malformed:
         status = "partial"
 
     # Deterministic pipeline order: by (action, insight set).

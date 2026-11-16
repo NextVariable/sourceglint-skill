@@ -280,3 +280,24 @@ class TestAtomicBundling:
     def test_detector_finds_connectors(self):
         assert detect_action_bundling("Do X and Y.") != []
         assert detect_action_bundling("Do X.") == []
+
+
+def test_custom_host_malformed_rows_do_not_hide_valid_suggestions():
+    from sourceglint.intelligence.model import ModelResponse, ModelStatus
+    from sourceglint.recommendations.generate import _parse_response
+
+    insights, evs = _base()
+    raw = {
+        "statement": "Try an entry offer.", "action": "Run an entry offer test.",
+        "supporting_insight_ids": [insights[0]["insight_id"]],
+        "action_class": "experiment", "gtm_dimensions": ["pricing"],
+        "action_anchor": "entry_offer_test", "confidence": 0.6,
+    }
+    response = ModelResponse("test", ModelStatus.SUCCESS, {
+        "recommendations": ["not an object", {**raw, "confidence": "high"}, raw],
+    })
+    result = _parse_response(response, {row["insight_id"]: row for row in insights}, {}, evs, "jp", "", 5)
+    assert len(result.validated) == 1
+    assert result.model_status == "partial"
+    assert any("must be an object" in warning for warning in result.warnings)
+    assert any("confidence not a number" in warning for warning in result.warnings)

@@ -134,7 +134,7 @@ def validate_inference(
         )
 
     # 9. Confidence 0-1
-    if draft.confidence < 0.0 or draft.confidence > 1.0:
+    if not 0.0 <= draft.confidence <= 1.0:
         violations.append(f"confidence out of range: {draft.confidence}")
 
     # 10. Recommendation leakage (§28, §32)
@@ -299,13 +299,20 @@ def _parse_inference_response(
             model_status=response.status.value,
         )
 
-    inferences_raw = response.payload.get("inferences") or []
+    inferences_raw = response.rows("inferences")
+    if inferences_raw is None:
+        return InferenceSynthesisResult(warnings=("inference_synthesis: invalid inferences array",), model_status="invalid_output")
     validated: list[InferenceDraft] = []
     rejected: list[InferenceDraft] = []
     insight_ids: list[str] = []
     warnings: list[str] = []
 
+    malformed = 0
     for i, inf_raw in enumerate(inferences_raw):
+        if not isinstance(inf_raw, Mapping):
+            malformed += 1
+            warnings.append(f"inference_synthesis: draft {i} must be an object")
+            continue
         try:
             draft = InferenceDraft(
                 statement=str(inf_raw.get("statement") or ""),
@@ -320,7 +327,8 @@ def _parse_inference_response(
                     if inf_raw.get("inference_distance") is not None else 1
                 ),
             )
-        except (TypeError, ValueError) as exc:
+        except (TypeError, ValueError, OverflowError) as exc:
+            malformed += 1
             warnings.append(f"inference_synthesis: draft {i} parse error: {exc}")
             continue
 
@@ -364,9 +372,9 @@ def _parse_inference_response(
             insight_ids.append(ins_id)
 
     status = "success"
-    if rejected and not validated:
+    if (rejected or malformed) and not validated:
         status = "invalid_output"
-    elif rejected:
+    elif rejected or malformed:
         status = "partial"
 
     return InferenceSynthesisResult(
